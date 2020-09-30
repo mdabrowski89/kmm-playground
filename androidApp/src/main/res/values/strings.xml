@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">kmm-playground</string>
+
+    <string name="button_add">Add</string>
+    <string name="button_delete_competed_tasks">Delete completed tasks</string>
+    <string name="new_task_hint">New task</string>
+</resources>
