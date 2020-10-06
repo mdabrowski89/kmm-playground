@@ -41,12 +41,10 @@ import pl.mobite.playground.domain.home.mvi.impl.HomeViewStateCache
 class HomeMviController(
     homeActionProcessing: HomeActionProcessing,
     homeResultProcessing: HomeResultProcessing,
-    homeViewStateCache: HomeViewStateCache,
     coroutineScope: CoroutineScope
 ) : MviController<HomeAction, HomeResult, HomeViewState>(
     mviActionProcessing = homeActionProcessing,
     mviResultProcessing = homeResultProcessing,
-    mviViewStateCache = homeViewStateCache,
     coroutineScope = coroutineScope
 )
 
