@@ -29,7 +29,6 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
 
     private val tasksAdapter = TasksAdapter { taskId, isChecked ->
         /** send action to change tasks state (completed/not completed) */
-        /** send action to change tasks state (completed/not completed) */
         homeMviController.accept { updateTask(taskId, isChecked) }
     }
 
