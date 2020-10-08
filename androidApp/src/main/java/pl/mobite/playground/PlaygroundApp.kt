@@ -2,8 +2,10 @@ package pl.mobite.playground
 
 import android.app.Application
 import org.koin.android.ext.koin.androidContext
-import org.koin.core.context.startKoin
-import pl.mobite.playground.di.appModule
+import pl.mobite.playground.di.doInitKoin
+import pl.mobite.playground.di.roomModule
+import pl.mobite.playground.di.serviceModule
+import pl.mobite.playground.di.viewModelModule
 
 class PlaygroundApp : Application() {
 
@@ -13,10 +15,12 @@ class PlaygroundApp : Application() {
     }
 
     private fun initKoin() {
-        startKoin {
+        doInitKoin {
             androidContext(this@PlaygroundApp)
             modules(
-                appModule
+                roomModule,
+                serviceModule,
+                viewModelModule
             )
         }
     }

@@ -13,6 +13,7 @@ repositories {
     google()
     jcenter()
     mavenCentral()
+    maven(url = "https://dl.bintray.com/ekito/koin")
 }
 dependencies {
     implementation(project(":shared"))
@@ -31,7 +32,8 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-extensions:2.2.0")
     implementation("androidx.lifecycle:lifecycle-viewmodel:2.2.0")
 
-    val koinVersion = "2.1.5"
+    val koinVersion = "3.0.0-alpha-4"
+    implementation("org.koin:koin-core:$koinVersion")
     implementation("org.koin:koin-android:$koinVersion")
     implementation("org.koin:koin-androidx-viewmodel:$koinVersion")
 
