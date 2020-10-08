@@ -10,6 +10,8 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import pl.mobite.playground.common.CommonFlow
+import pl.mobite.playground.common.asCommonFlow
 
 /**
  * Wrapper around whole Mvi flow: MviAction -> processing -> MviResult -> reducing -> MviViewState
@@ -26,7 +28,7 @@ open class MviController<A : MviAction, R : MviResult, VS : MviViewState>(
     private val mviResultProcessing: MviResultProcessing<R, VS>,
     private val coroutineScope: CoroutineScope
 ) {
-    val viewStatesFlow: Flow<VS> = mviResultProcessing.viewStatesFlow
+    val viewStatesFlow: CommonFlow<VS> = mviResultProcessing.viewStatesFlow.asCommonFlow(coroutineScope)
 
     init {
         mviActionProcessing.resultsFlow
