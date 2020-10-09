@@ -10,7 +10,7 @@ import Foundation
 import shared
 
 // TODO: add proper implementation
-class TaskServiceImpl: TaskService {
+final class TaskServiceImpl: TaskService {
     
     func count(completionHandler: @escaping (KotlinInt?, Error?) -> Void) {
         completionHandler(5, nil);

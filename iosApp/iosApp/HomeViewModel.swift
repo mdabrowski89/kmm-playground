@@ -9,8 +9,3 @@
 import Foundation
 import shared
 
-class HomeViewModel: ViewModelIOS {
-    
-    lazy var homeMviController: HomeMviController = koin.get(objCClass: HomeMviController.self, parameter: viewModelScope) as! HomeMviController;
-    
-}
