@@ -45,4 +45,7 @@ open class MviController<A : MviAction, R : MviResult, VS : MviViewState>(
             )
         }
     }
+
+    /** Used on iOS implementation of the framework */
+    fun defaultViewState(): VS = mviResultProcessing.defaultViewState()
 }
