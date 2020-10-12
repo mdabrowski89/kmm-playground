@@ -20,6 +20,7 @@
 		93161975252F1A6E006AB3DB /* Koin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93161974252F1A6E006AB3DB /* Koin.swift */; };
 		9375D770252DEFD100AF9D24 /* TasksServiceImpl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9375D76F252DEFD100AF9D24 /* TasksServiceImpl.swift */; };
 		93CD0A2E252FB775009BB272 /* HomeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93CD0A2D252FB775009BB272 /* HomeViewModel.swift */; };
+		DC553D4C25345E43001BBC8D /* ViewStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC553D4B25345E43001BBC8D /* ViewStore.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -72,6 +73,7 @@
 		93161974252F1A6E006AB3DB /* Koin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Koin.swift; sourceTree = "<group>"; };
 		9375D76F252DEFD100AF9D24 /* TasksServiceImpl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TasksServiceImpl.swift; sourceTree = "<group>"; };
 		93CD0A2D252FB775009BB272 /* HomeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewModel.swift; sourceTree = "<group>"; };
+		DC553D4B25345E43001BBC8D /* ViewStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewStore.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -134,6 +136,7 @@
 				7555FF86242A565B00829871 /* Preview Content */,
 				93161974252F1A6E006AB3DB /* Koin.swift */,
 				93CD0A2D252FB775009BB272 /* HomeViewModel.swift */,
+				DC553D4B25345E43001BBC8D /* ViewStore.swift */,
 			);
 			path = iosApp;
 			sourceTree = "<group>";
@@ -329,6 +332,7 @@
 				93CD0A2E252FB775009BB272 /* HomeViewModel.swift in Sources */,
 				93161975252F1A6E006AB3DB /* Koin.swift in Sources */,
 				7555FF81242A565900829871 /* SceneDelegate.swift in Sources */,
+				DC553D4C25345E43001BBC8D /* ViewStore.swift in Sources */,
 				9375D770252DEFD100AF9D24 /* TasksServiceImpl.swift in Sources */,
 				7555FF83242A565900829871 /* ContentView.swift in Sources */,
 			);

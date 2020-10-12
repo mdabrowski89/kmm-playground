@@ -1,7 +1,7 @@
 import SwiftUI
 import shared
 
-typealias StoreFactory<Store> = (CoroutineScope) -> Store
+typealias StoreFactory<Store> = (CoroutineScopeType) -> Store
 
 struct ContentView: View {
 
@@ -11,9 +11,10 @@ struct ContentView: View {
         WithViewStore(storeFactory) { viewStore in
             VStack {
                 Text("" + "\(viewStore.state.inProgress)")
-                List(viewStore.state.tasks ?? [], id: \.id) { task in
-                    Text("task.content")
-                }
+                // Text("" + "\(viewStore.state.tasks?.first?.isDone ?? false)")
+                // List(viewStore.state.tasks ?? [], id: \.id) { task in
+                //     Text("task.content")
+                // }
             }
             .onAppear {
                 viewStore.accept { $0.loadDataIfNeeded() }
