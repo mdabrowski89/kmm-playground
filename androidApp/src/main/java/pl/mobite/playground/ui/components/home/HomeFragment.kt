@@ -71,7 +71,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
             deleteCompletedTasksButton.isEnabled = tasks.orEmpty().any { it.isDone }
 
             tasks?.let { newTasks ->
-                tasksAdapter.tasks = newTasks
+                tasksAdapter.tasks = newTasks.toList()
             }
 
             newTaskAdded?.consume {

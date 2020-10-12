@@ -2,19 +2,19 @@ import SwiftUI
 import Combine
 import shared
 
+typealias CoroutineScope = CoroutineScopeIOS
 typealias CoroutineScopeType = Kotlinx_coroutines_coreCoroutineScope
 
-typealias CoroutineScope = CoroutineScopeKt
+extension CoroutineScope {
+
+    static let main: CoroutineScope = CoroutineScopesKt.mainScope()
+}
 
 final class ViewStore<Action, Result, State>: ObservableObject
     where Action: AnyObject, Result: AnyObject, State: AnyObject
 {
 
-    typealias Store = MviController<Action, Result, State>
-
-    let _accept: (@escaping (State) -> Action?) -> Void
-
-    private let coroutineScope: CoroutineScopeType
+    typealias _Store = MviController<Action, Result, State>
 
     private(set) var state: State {
         willSet {
@@ -22,31 +22,32 @@ final class ViewStore<Action, Result, State>: ObservableObject
         }
     }
 
+    private let scope: CoroutineScope
+
+    private let _accept: (@escaping (State) -> Action?) -> Void
+
     init(
-        storeFactory: StoreFactory<Store>,
-        on coroutineScope: CoroutineScopeType = CoroutineScope.mainScope(),
+        storeFactory: StoreFactory<_Store>,
+        on scope: CoroutineScope = .main,
         removeDupicates isDuplicate: @escaping (State, State) -> Bool
     ) {
-        let store = storeFactory(coroutineScope)
+        let store = storeFactory(scope.scope)
         self._accept = store.accept
         self.state = store.defaultViewState()
-        self.coroutineScope = coroutineScope
+        self.scope = scope
 
         store.viewStatesFlow.watch { [weak self] state in
             guard let self = self else { return }
 
-            print("Thread.current.isMainThread", Thread.current.isMainThread)
-
             if let state = state, !isDuplicate(self.state, state) {
                 self.state = state
+                print(state)
             }
-
-            // print(self.state)
         }
     }
 
     deinit {
-        CoroutineScope.cancel(scope: coroutineScope)
+        scope.cancel()
     }
 
     func accept(_ intent: @escaping (State) -> Action?) {
@@ -56,7 +57,7 @@ final class ViewStore<Action, Result, State>: ObservableObject
 
 extension ViewStore where State: Equatable {
 
-    convenience init(storeFactory: StoreFactory<Store>) {
+    convenience init(storeFactory: StoreFactory<_Store>) {
         self.init(
             storeFactory: storeFactory,
             removeDupicates: ==
@@ -68,7 +69,7 @@ struct WithViewStore<Action, Result, State, Content>: View
     where Action: AnyObject, Result: AnyObject, State: AnyObject, Content: View
 {
 
-    typealias Store = MviController<Action, Result, State>
+    typealias _Store = MviController<Action, Result, State>
 
     typealias _ViewStore = ViewStore<Action, Result, State>
 
@@ -77,7 +78,7 @@ struct WithViewStore<Action, Result, State, Content>: View
     @ObservedObject private var viewStore: _ViewStore
 
     init(
-        _ storeFactory: StoreFactory<Store>,
+        _ storeFactory: StoreFactory<_Store>,
         removeDupicates isDuplicate: @escaping (State, State) -> Bool,
         @ViewBuilder content: @escaping (_ViewStore) -> Content
     ) {
@@ -97,7 +98,7 @@ struct WithViewStore<Action, Result, State, Content>: View
 extension WithViewStore where State: Equatable {
 
     init(
-        _ storeFactory: StoreFactory<Store>,
+        _ storeFactory: StoreFactory<_Store>,
         @ViewBuilder content: @escaping (_ViewStore) -> Content
     ) {
         self.init(
