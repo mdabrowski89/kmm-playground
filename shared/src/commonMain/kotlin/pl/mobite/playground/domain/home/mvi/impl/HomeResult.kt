@@ -12,7 +12,7 @@ sealed class HomeResult : MviResult {
 
     data class ErrorResult(val t: Throwable) : HomeResult()
 
-    data class LoadTasksResult(val tasks: List<Task>, val inProgress: Boolean) : HomeResult()
+    data class LoadTasksResult(val tasks: List<Task>) : HomeResult()
 
     data class AddTaskResult(val addedTask: Task) : HomeResult()
 

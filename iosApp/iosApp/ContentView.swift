@@ -10,11 +10,10 @@ struct ContentView: View {
     var body: some View {
         WithViewStore(storeFactory) { viewStore in
             VStack {
-                Text("" + "\(viewStore.state.inProgress)")
-                // Text("" + "\(viewStore.state.tasks?.first?.isDone ?? false)")
-                // List(viewStore.state.tasks ?? [], id: \.id) { task in
-                //     Text("task.content")
-                // }
+                Text("loading in progress: " + "\(viewStore.state.inProgress)")
+                List(viewStore.state.tasks ?? [], id: \.id) { task in
+                    Text("" + "\(task.content)")
+                }
             }
             .onAppear {
                 viewStore.accept { $0.loadDataIfNeeded() }

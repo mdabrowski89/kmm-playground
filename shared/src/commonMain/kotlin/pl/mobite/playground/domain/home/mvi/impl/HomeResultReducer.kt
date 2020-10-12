@@ -41,7 +41,7 @@ class HomeResultReducer : MviResultReducer<HomeResult, HomeViewState> {
         copy(inProgress = false, error = ViewStateErrorEvent(result.t))
 
     private fun HomeViewState.reduce(result: LoadTasksResult) =
-        copy(inProgress = result.inProgress, tasks = result.tasks)
+        copy(inProgress = false , tasks = result.tasks)
 
     private fun HomeViewState.reduce(result: AddTaskResult) =
         copy(

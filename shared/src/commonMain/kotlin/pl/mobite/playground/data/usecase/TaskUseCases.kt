@@ -33,6 +33,7 @@ class GetTaskUseCaseImpl(
         return taskService
             .getForId(taskId)
             .firstOrNull()
+            ?.copy()
     }
 }
 
@@ -41,7 +42,9 @@ class GetAllTasksUseCaseImpl(
 ) : GetAllTasksUseCase {
 
     override suspend fun invoke(): List<Task> {
-        return taskService.getAll()
+        return taskService
+            .getAll()
+            .map { it.copy() }
     }
 }
 
@@ -50,7 +53,9 @@ class GetAllDoneTasksUseCaseImpl(
 ) : GetAllDoneTasksUseCase {
 
     override suspend fun invoke(): List<Task> {
-        return taskService.getAllDone()
+        return taskService
+            .getAllDone()
+            .map { it.copy() }
     }
 }
 

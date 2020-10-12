@@ -64,7 +64,7 @@ class LoadTasksActionProcessor(
     override fun invoke(action: LoadTasksAction) = flow {
         emit(InProgressResult)
         delay(PROCESSING_DELAY_MILS)
-        emit(LoadTasksResult(getAllTasksUseCase(), inProgress = false))
+        emit(LoadTasksResult(getAllTasksUseCase()))
     }.catch {
         emit(ErrorResult(it))
     }
