@@ -9,22 +9,21 @@ struct ContentView: View {
 
     var body: some View {
         WithViewStore(storeFactory) { viewStore in
-                VStack {
-                    Text("greet()" + "\(viewStore.state.inProgress)")
-                        .onAppear {
-                            // viewStore.accept { $0.loadDataIfNeeded() }
-                            viewStore.accept { $0.updateTask(taskId: 1, isDone: true) }
-                            viewStore.accept { $0.updateTask(taskId: 2, isDone: false) }
-                        }
-
-                    NavigationLink(
-                        destination: ContentView(),
-                        label: { Text("Test Next") }
-                    )
+            VStack {
+                Text("" + "\(viewStore.state.inProgress)")
+                List(viewStore.state.tasks ?? [], id: \.id) { task in
+                    Text("task.content")
                 }
+            }
+            .onAppear {
+                viewStore.accept { $0.loadDataIfNeeded() }
+            }
         }
     }
 }
+
+// extension Task: Identifiable {
+// }
 
 //struct ContentView_Previews: PreviewProvider {
 //    static var previews: some View {

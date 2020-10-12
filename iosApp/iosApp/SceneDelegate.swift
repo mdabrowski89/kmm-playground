@@ -5,7 +5,9 @@ import shared
 typealias CoroutineScope = Kotlinx_coroutines_coreCoroutineScope
 typealias CoroutineScopeWrapper = ViewModelIOS
 
-final class ViewStore<Action, Result, State>: ObservableObject where Action: AnyObject, Result: AnyObject, State: AnyObject {
+final class ViewStore<Action, Result, State>: ObservableObject
+    where Action: AnyObject, Result: AnyObject, State: AnyObject
+{
 
     typealias Store = MviController<Action, Result, State>
 
@@ -13,29 +15,34 @@ final class ViewStore<Action, Result, State>: ObservableObject where Action: Any
 
     private let scope = CoroutineScopeWrapper()
 
-    private(set) var state: State! {
+    private(set) var state: State {
         willSet {
             objectWillChange.send()
         }
     }
 
-    init(storeFactory: StoreFactory<Store>, removeDupicates isDuplicated: (State, State) -> Bool) {
+    init(
+        storeFactory: StoreFactory<Store>,
+        removeDupicates isDuplicated: @escaping (State, State) -> Bool
+    ) {
         let store = storeFactory(scope.viewModelScope)
         self._accept = store.accept
+        self.state = store.defaultViewState()
 
         store.viewStatesFlow.watch { [weak self] state in
             guard let self = self else { return }
 
-            if !isDuplicated(self.state, state!) {
+            print("Thread.current.isMainThread", Thread.current.isMainThread)
+
+            if let state = state, !isDuplicated(self.state, state) {
                 self.state = state
             }
-        }
 
-        print("[Scope] -> init")
+            // print(self.state)
+        }
     }
 
     deinit {
-        print("[Scope] -> deinit")
         scope.onCleared()
     }
 
@@ -54,7 +61,9 @@ extension ViewStore where State: Equatable {
     }
 }
 
-struct WithViewStore<Action, Result, State, Content>: View where Action: AnyObject, Result: AnyObject, State: AnyObject, Content: View {
+struct WithViewStore<Action, Result, State, Content>: View
+    where Action: AnyObject, Result: AnyObject, State: AnyObject, Content: View
+{
 
     typealias Store = MviController<Action, Result, State>
 
@@ -66,16 +75,29 @@ struct WithViewStore<Action, Result, State, Content>: View where Action: AnyObje
 
     init(
         _ storeFactory: (CoroutineScope) -> Store,
+        removeDupicates isDuplicated: @escaping (State, State) -> Bool,
         @ViewBuilder content: @escaping (_ViewStore) -> Content
     ) {
-        self.viewStore = .init(storeFactory: storeFactory)
+        self.viewStore = .init(storeFactory: storeFactory, removeDupicates: isDuplicated)
         self.content = content
     }
 
     var body: some View {
-        if viewStore.state != nil {
-            content(viewStore)
-        }
+        content(viewStore)
+    }
+}
+
+extension WithViewStore where State: Equatable {
+
+    init(
+        _ storeFactory: (CoroutineScope) -> Store,
+        @ViewBuilder content: @escaping (_ViewStore) -> Content
+    ) {
+        self.init(
+            storeFactory,
+            removeDupicates: ==,
+            content: content
+        )
     }
 }
 

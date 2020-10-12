@@ -28,7 +28,9 @@ open class MviController<A : MviAction, R : MviResult, VS : MviViewState>(
     private val mviResultProcessing: MviResultProcessing<R, VS>,
     private val coroutineScope: CoroutineScope
 ) {
-    val viewStatesFlow: CommonFlow<VS> = mviResultProcessing.viewStatesFlow.asCommonFlow(coroutineScope)
+    val viewStatesFlow: CommonFlow<VS> = mviResultProcessing
+        .viewStatesFlow
+        .asCommonFlow(coroutineScope)
 
     init {
         mviActionProcessing.resultsFlow

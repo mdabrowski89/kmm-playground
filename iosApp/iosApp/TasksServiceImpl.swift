@@ -25,8 +25,9 @@ final class TaskServiceImpl: TaskService {
     }
     
     func getAll(completionHandler: @escaping ([Task]?, Error?) -> Void) {
-        let task = Task(id: 1, content: "Sample task", isDone: false)
-        completionHandler([task], nil)
+        let task1 = Task(id: 1, content: "Sample task", isDone: false)
+        let task2 = Task(id: 2, content: "Sample task", isDone: false)
+        completionHandler([task1, task2], nil)
     }
     
     func getAllDone(completionHandler: @escaping ([Task]?, Error?) -> Void) {
