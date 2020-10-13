@@ -11,6 +11,8 @@ struct ContentView: View {
 
     @State var text: String = ""
 
+    @State var showAlert = false
+
     var body: some View {
         WithViewStore(storeFactory) { viewStore in
             ZStack {
@@ -27,6 +29,7 @@ struct ContentView: View {
                     Divider()
                     Button("Delete completed Tasks") {
                         viewStore.accept { $0.deleteCompletedTasks() }
+                        // self.showAlert.toggle()
                     }
                     Divider()
                     List(viewStore.tasks ?? []) { task in
@@ -55,6 +58,9 @@ struct ContentView: View {
             .onAppear {
                 viewStore.accept { $0.loadDataIfNeeded() }
             }
+        }
+        .alert(isPresented: $showAlert) {
+            Alert(title: Text("Test"))
         }
     }
 }
