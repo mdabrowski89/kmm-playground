@@ -51,7 +51,7 @@ class ViewStateEmptyEvent(
 }
 
 abstract class SingleEvent<T>(
-    private val argument: T,
+    val argument: T,
     protected open val isConsumed: AtomicBoolean = AtomicBoolean(false)
 ) {
 
@@ -62,6 +62,8 @@ abstract class SingleEvent<T>(
             action.invoke(argument)
         }
     }
+
+    fun consume() = isConsumed.set(true)
 
     fun resend() = isConsumed.set(false)
 }

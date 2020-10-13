@@ -1,7 +1,6 @@
 import SwiftUI
-import shared
-
 import Combine
+import shared
 
 typealias StoreFactory<Store> = (CoroutineScopeType) -> Store
 
@@ -10,8 +9,6 @@ struct ContentView: View {
     let storeFactory: StoreFactory<HomeMviController> = koin.store()
 
     @State var text: String = ""
-
-    @State var showAlert = false
 
     var body: some View {
         WithViewStore(storeFactory) { viewStore in
@@ -29,7 +26,6 @@ struct ContentView: View {
                     Divider()
                     Button("Delete completed Tasks") {
                         viewStore.accept { $0.deleteCompletedTasks() }
-                        // self.showAlert.toggle()
                     }
                     Divider()
                     List(viewStore.tasks ?? []) { task in
@@ -43,12 +39,6 @@ struct ContentView: View {
                             }
                         }
                     }
-
-                    viewStore.error.map {
-                        SingleEventConsumer(event: $0) { error in
-                            Text("Error: \(error.message ?? "")")
-                        }
-                    }
                 }
             }
             .navigationBarTitle("Tasks", displayMode: .inline)
@@ -58,15 +48,46 @@ struct ContentView: View {
             .onAppear {
                 viewStore.accept { $0.loadDataIfNeeded() }
             }
-        }
-        .alert(isPresented: $showAlert) {
-            Alert(title: Text("Test"))
+            .alert(event: viewStore.error) { error in
+                Alert(title: Text(error.message ?? ""))
+            }
         }
     }
 }
 
 extension Task: Identifiable {
     // no-op
+}
+
+extension View {
+
+    func alert<T>(event: shared.SingleEvent<T>?, content: (T) -> Alert) -> some View where T: AnyObject {
+        alert(
+            isPresented: .consume(event: event),
+            content: {
+                event?.argument.map(content) ?? Alert(title: Text(""))
+            }
+        )
+    }
+}
+
+extension Binding where Value == Bool {
+
+    static func consume<T>(event: SingleEvent<T>?) -> Self where T: AnyObject {
+        guard let event = event, !event.isConsumed.value else {
+            return .constant(false)
+        }
+
+        return .init(
+            get: {
+                return !event.isConsumed.value
+            },
+            set: {
+                guard !$0 else { return }
+                event.consume()
+            }
+        )
+    }
 }
 
 struct ActivityIndicator: UIViewRepresentable {
@@ -79,40 +100,6 @@ struct ActivityIndicator: UIViewRepresentable {
         uiView.startAnimating()
     }
     
-}
-
-final class SingleEvent<Value>: ObservableObject where Value: AnyObject {
-
-    private(set) var value: Value? {
-        willSet { objectWillChange.send() }
-    }
-
-    init(event: shared.SingleEvent<Value>) {
-        event.consume { [weak self] in
-            self?.value = $0
-        }
-    }
-}
-
-struct SingleEventConsumer<T, Content>: View where T: AnyObject, Content: View {
-
-    @ObservedObject private(set) var event: SingleEvent<T>
-
-    private let content: (T) -> Content
-
-    @State private var value: T?
-
-    init(
-        event: shared.SingleEvent<T>,
-        @ViewBuilder content: @escaping (T) -> Content
-    ) {
-        self.event = SingleEvent(event: event)
-        self.content = content
-    }
-
-    var body: some View {
-        event.value.map(content)
-    }
 }
 
 //struct ContentView_Previews: PreviewProvider {
