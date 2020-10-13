@@ -29,7 +29,7 @@ struct ContentView: View {
                         viewStore.accept { $0.deleteCompletedTasks() }
                     }
                     Divider()
-                    List(viewStore.state.tasks ?? []) { task in
+                    List(viewStore.tasks ?? []) { task in
                         Button {
                             viewStore.accept { $0.updateTask(taskId: task.id, isDone: !task.isDone) }
                         } label: {
@@ -41,7 +41,7 @@ struct ContentView: View {
                         }
                     }
 
-                    viewStore.state.error.map {
+                    viewStore.error.map {
                         SingleEventConsumer(event: $0) { error in
                             Text("Error: \(error.message ?? "")")
                         }
@@ -50,7 +50,7 @@ struct ContentView: View {
             }
             .navigationBarTitle("Tasks", displayMode: .inline)
             .navigationBarItems(
-                leading: viewStore.state.inProgress ? AnyView(ActivityIndicator()) : AnyView(EmptyView())
+                leading: viewStore.inProgress ? AnyView(ActivityIndicator()) : AnyView(EmptyView())
             )
             .onAppear {
                 viewStore.accept { $0.loadDataIfNeeded() }
@@ -94,6 +94,8 @@ struct SingleEventConsumer<T, Content>: View where T: AnyObject, Content: View {
 
     private let content: (T) -> Content
 
+    @State private var value: T?
+
     init(
         event: shared.SingleEvent<T>,
         @ViewBuilder content: @escaping (T) -> Content
@@ -106,9 +108,6 @@ struct SingleEventConsumer<T, Content>: View where T: AnyObject, Content: View {
         event.value.map(content)
     }
 }
-
-// extension Task: Identifiable {
-// }
 
 //struct ContentView_Previews: PreviewProvider {
 //    static var previews: some View {

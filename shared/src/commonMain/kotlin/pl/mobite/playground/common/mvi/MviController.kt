@@ -6,6 +6,7 @@ import pl.mobite.playground.common.mvi.api.MviResult
 import pl.mobite.playground.common.mvi.processing.MviResultProcessing
 import pl.mobite.playground.common.mvi.api.MviViewState
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach

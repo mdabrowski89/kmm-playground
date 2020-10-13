@@ -9,12 +9,8 @@
 import Foundation
 import shared
 
-extension Array {
-
-    func freezen() -> Self {
-        FreezerKt.freeze(obj: self)
-        return self
-    }
+func freeze(_ object: Any) {
+    FreezerKt.freeze(obj: object)
 }
 
 // TODO: add proper implementation
@@ -39,7 +35,7 @@ final class TaskServiceImpl: TaskService {
     }
     
     func getAll(completionHandler: @escaping ([Task]?, Error?) -> Void) {
-        completionHandler(tasks.freezen(), nil)
+        completionHandler(tasks, nil)
     }
     
     func getAllDone(completionHandler: @escaping ([Task]?, Error?) -> Void) {

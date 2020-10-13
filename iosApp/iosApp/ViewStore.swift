@@ -10,6 +10,11 @@ extension CoroutineScope {
     static let main: CoroutineScope = CoroutineScopesKt.mainScope()
 }
 
+final class Store {
+    
+}
+
+@dynamicMemberLookup
 final class ViewStore<Action, Result, State>: ObservableObject
     where Action: AnyObject, Result: AnyObject, State: AnyObject
 {
@@ -48,6 +53,10 @@ final class ViewStore<Action, Result, State>: ObservableObject
 
     deinit {
         scope.cancel()
+    }
+
+    subscript<LocalState>(dynamicMember keyPath: KeyPath<State, LocalState>) -> LocalState {
+      state[keyPath: keyPath]
     }
 
     func accept(_ intent: @escaping (State) -> Action?) {
