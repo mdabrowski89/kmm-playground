@@ -22,6 +22,7 @@ import pl.mobite.playground.data.usecase.GetAllTasksUseCase
 import pl.mobite.playground.data.usecase.GetTaskUseCase
 import pl.mobite.playground.data.usecase.UpdateTaskUseCase
 import pl.mobite.playground.model.Task
+import kotlin.random.Random
 
 /**
  * MviActionProcessor which delegates processing of each action to "specialized" processor.
@@ -49,7 +50,7 @@ class HomeActionProcessor(
 }
 
 /** delay processing of na action - only for test purposes */
-private const val PROCESSING_DELAY_MILS = 5000L
+private const val PROCESSING_DELAY_MILS = 500L
 
 /**
  * "Specialized" processors. Each of them is responsible for processing different action
@@ -77,7 +78,7 @@ class AddTaskActionProcessor(
     override fun invoke(action: AddTaskAction) = flow {
         emit(InProgressResult)
         delay(PROCESSING_DELAY_MILS)
-        val newTask = addTaskUseCase(Task(0, action.taskContent, false))
+        val newTask = addTaskUseCase(Task(Random.nextLong(), action.taskContent, false))
         emit(AddTaskResult(newTask))
     }.catch {
         emit(ErrorResult(it))

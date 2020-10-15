@@ -9,11 +9,20 @@
 import Foundation
 import shared
 
+func freeze(_ object: Any) {
+    FreezerKt.freeze(obj: object)
+}
+
 // TODO: add proper implementation
 final class TaskServiceImpl: TaskService {
-    
+
+    private var tasks: [Task] = []
+
     func count(completionHandler: @escaping (KotlinInt?, Error?) -> Void) {
-        completionHandler(5, nil);
+        completionHandler(
+            KotlinInt(integerLiteral: tasks.count),
+            nil
+        );
     }
     
     func delete(tasks: [Task], completionHandler: @escaping (KotlinUnit?, Error?) -> Void) {
@@ -21,30 +30,32 @@ final class TaskServiceImpl: TaskService {
     }
     
     func deleteAll(completionHandler: @escaping (KotlinUnit?, Error?) -> Void) {
+        tasks.removeAll()
         completionHandler(KotlinUnit(), nil)
     }
     
     func getAll(completionHandler: @escaping ([Task]?, Error?) -> Void) {
-        var task1 = Task(id: 1, content: "Sample task", isDone: false)
-        var task2 = Task(id: 2, content: "Sample task", isDone: false)
-        completionHandler([task1, task2], nil)
+        completionHandler(tasks, nil)
     }
     
     func getAllDone(completionHandler: @escaping ([Task]?, Error?) -> Void) {
-        let task = Task(id: 1, content: "Sample task", isDone: false)
-        completionHandler([task], nil)
+        completionHandler(tasks.filter { $0.isDone }, nil)
     }
     
     func getForId(id: Int64, completionHandler: @escaping ([Task]?, Error?) -> Void) {
-        let task = Task(id: 1, content: "Sample task", isDone: false)
-        completionHandler([task], nil)
+        completionHandler(tasks.filter { $0.id == id }, nil)
     }
     
     func insert(task: Task, completionHandler: @escaping (KotlinLong?, Error?) -> Void) {
-        completionHandler(1, nil)
+        tasks.insert(task, at: 0)
+        completionHandler(KotlinLong(value: task.id), nil)
     }
     
     func update(task: Task, completionHandler: @escaping (KotlinUnit?, Error?) -> Void) {
+        if let index = tasks.firstIndex(where: { $0.id == task.id }) {
+            tasks[index] = task
+        }
+
         completionHandler(KotlinUnit(), nil)
     }
 }
