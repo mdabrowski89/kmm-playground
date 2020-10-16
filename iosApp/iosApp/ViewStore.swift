@@ -72,7 +72,8 @@ final class ViewStore<Action, Result, State>: ObservableObject
     ) -> Binding<LocalState> {
         return .init(
             get: { get(self.state) },
-            set: { _ in
+            set: {
+                guard !$0 else { return }
                 self._acceptResult(result)
             }
         )
