@@ -17,8 +17,8 @@ import pl.mobite.playground.model.Task
 data class HomeViewState(
     val inProgress: Boolean,
     val tasks: List<Task>?,
-    val newTaskAdded: ViewStateEmptyEvent?,
-    val error: ViewStateErrorEvent?,
+    val newTaskAdded: Boolean?,
+    val error: Throwable?,
 ) : MviViewState {
 
     override fun isSavable(): Boolean = !inProgress
