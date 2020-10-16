@@ -49,6 +49,12 @@ open class MviController<A : MviAction, R : MviResult, VS : MviViewState>(
         }
     }
 
+    fun accept(result: R) {
+        coroutineScope.launch {
+            mviResultProcessing.accept(result)
+        }
+    }
+
     /** Used on iOS implementation of the framework */
     fun defaultViewState(): VS = mviResultProcessing.defaultViewState()
 }

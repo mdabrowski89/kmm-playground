@@ -29,7 +29,9 @@ final class ViewStore<Action, Result, State>: ObservableObject
 
     private let scope: CoroutineScope
 
-    private let _accept: (@escaping (State) -> Action?) -> Void
+    private let _acceptAction: (@escaping (State) -> Action?) -> Void
+
+    private let _acceptResult: (Result) -> Void
 
     init(
         storeFactory: StoreFactory<_Store>,
@@ -37,7 +39,8 @@ final class ViewStore<Action, Result, State>: ObservableObject
         removeDupicates isDuplicate: @escaping (State, State) -> Bool
     ) {
         let store = storeFactory(scope.scope)
-        self._accept = store.accept
+        self._acceptAction = store.accept
+        self._acceptResult = store.accept
         self.state = store.defaultViewState()
         self.scope = scope
 
@@ -60,7 +63,19 @@ final class ViewStore<Action, Result, State>: ObservableObject
     }
 
     func accept(_ intent: @escaping (State) -> Action?) {
-        _accept(intent)
+        _acceptAction(intent)
+    }
+
+    func binding<LocalState>(
+        get: @escaping (State) -> LocalState,
+        send result: Result
+    ) -> Binding<LocalState> {
+        return .init(
+            get: { get(self.state) },
+            set: { _ in
+                self._acceptResult(result)
+            }
+        )
     }
 }
 

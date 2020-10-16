@@ -11,6 +11,9 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.asLiveData
 import androidx.recyclerview.widget.RecyclerView
 import pl.mobite.playground.R
+import pl.mobite.playground.domain.home.mvi.impl.HomeResult.EventConsumption
+import pl.mobite.playground.domain.home.mvi.impl.HomeResult.EventConsumption.ErrorConsumed
+import pl.mobite.playground.domain.home.mvi.impl.HomeResult.EventConsumption.NewTaskAddedConsumed
 import pl.mobite.playground.domain.home.mvi.impl.HomeViewState
 import pl.mobite.playground.ui.components.home.recyclerview.TasksAdapter
 import pl.mobite.playground.utils.mviController
@@ -74,13 +77,25 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
                 tasksAdapter.tasks = newTasks.toList()
             }
 
-            newTaskAdded?.consume {
+            newTaskAdded?.let {
+                if (it) {
+                    newTaskInput.setText("")
+                    homeMviController.accept(NewTaskAddedConsumed)
+                }
+            }
+
+            error?.let {
+                Toast.makeText(requireContext(), "Error occurred", Toast.LENGTH_SHORT).show()
+                homeMviController.accept(ErrorConsumed)
+            }
+
+            /*newTaskAdded?.consume {
                 newTaskInput.setText("")
             }
 
             error?.consume {
                 Toast.makeText(requireContext(), "Error occurred", Toast.LENGTH_SHORT).show()
-            }
+            }*/
         }
     }
 }
