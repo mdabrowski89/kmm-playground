@@ -41,7 +41,8 @@ class GetAllTasksUseCaseImpl(
 ) : GetAllTasksUseCase {
 
     override suspend fun invoke(): List<Task> {
-        return taskService.getAll()
+        return taskService
+            .getAll()
     }
 }
 
@@ -50,7 +51,8 @@ class GetAllDoneTasksUseCaseImpl(
 ) : GetAllDoneTasksUseCase {
 
     override suspend fun invoke(): List<Task> {
-        return taskService.getAllDone()
+        return taskService
+            .getAllDone()
     }
 }
 
