@@ -30,7 +30,7 @@ struct ContentView: View {
                     Divider()
                     List(viewStore.tasks ?? []) { task in
                         Button {
-                            viewStore.accept { $0.updateTask(taskId: task.id, isDone: !task.isDone) }
+                            viewStore.accept { $0.updateTask(taskId: 0, isDone: !task.isDone) }
                         } label: {
                             HStack {
                                 Text("\(task.content)")
@@ -48,46 +48,21 @@ struct ContentView: View {
             .onAppear {
                 viewStore.accept { $0.loadDataIfNeeded() }
             }
-            .alert(event: viewStore.error) { error in
-                Alert(title: Text(error.message ?? ""))
-            }
+            .alert(
+                isPresented: viewStore.binding(
+                    get: { $0.error != nil },
+                    send: HomeResult.EventConsumption.EventConsumptionErrorConsumed()
+                ),
+                content: {
+                    viewStore.error.map { Alert(title: Text($0.message ?? "")) } ?? Alert(title: Text(""))
+                }
+            )
         }
     }
 }
 
 extension Task: Identifiable {
     // no-op
-}
-
-extension View {
-
-    func alert<T>(event: shared.SingleEvent<T>?, content: (T) -> Alert) -> some View where T: AnyObject {
-        alert(
-            isPresented: .consume(event: event),
-            content: {
-                event?.argument.map(content) ?? Alert(title: Text(""))
-            }
-        )
-    }
-}
-
-extension Binding where Value == Bool {
-
-    static func consume<T>(event: SingleEvent<T>?) -> Self where T: AnyObject {
-        guard let event = event, !event.isConsumed.value else {
-            return .constant(false)
-        }
-
-        return .init(
-            get: {
-                return !event.isConsumed.value
-            },
-            set: {
-                guard !$0 else { return }
-                event.consume()
-            }
-        )
-    }
 }
 
 struct ActivityIndicator: UIViewRepresentable {
