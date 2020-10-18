@@ -20,6 +20,7 @@
 		93161975252F1A6E006AB3DB /* Koin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93161974252F1A6E006AB3DB /* Koin.swift */; };
 		9375D770252DEFD100AF9D24 /* TasksServiceImpl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9375D76F252DEFD100AF9D24 /* TasksServiceImpl.swift */; };
 		DC553D4C25345E43001BBC8D /* ViewStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC553D4B25345E43001BBC8D /* ViewStore.swift */; };
+		DCC55BE4253CE88B001400B6 /* StatePublisher.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCC55BE3253CE88B001400B6 /* StatePublisher.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -72,6 +73,7 @@
 		93161974252F1A6E006AB3DB /* Koin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Koin.swift; sourceTree = "<group>"; };
 		9375D76F252DEFD100AF9D24 /* TasksServiceImpl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TasksServiceImpl.swift; sourceTree = "<group>"; };
 		DC553D4B25345E43001BBC8D /* ViewStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewStore.swift; sourceTree = "<group>"; };
+		DCC55BE3253CE88B001400B6 /* StatePublisher.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StatePublisher.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -133,6 +135,7 @@
 				7555FF8C242A565B00829871 /* Info.plist */,
 				7555FF86242A565B00829871 /* Preview Content */,
 				93161974252F1A6E006AB3DB /* Koin.swift */,
+				DCC55BE3253CE88B001400B6 /* StatePublisher.swift */,
 				DC553D4B25345E43001BBC8D /* ViewStore.swift */,
 			);
 			path = iosApp;
@@ -326,6 +329,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				7555FF7F242A565900829871 /* AppDelegate.swift in Sources */,
+				DCC55BE4253CE88B001400B6 /* StatePublisher.swift in Sources */,
 				93161975252F1A6E006AB3DB /* Koin.swift in Sources */,
 				7555FF81242A565900829871 /* SceneDelegate.swift in Sources */,
 				DC553D4C25345E43001BBC8D /* ViewStore.swift in Sources */,

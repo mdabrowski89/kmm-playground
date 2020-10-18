@@ -4,16 +4,16 @@ import shared
 struct StatePublisher<Output>: Publisher where Output: AnyObject {
     typealias Failure = Never
 
-    typealias Handler = (@escaping (Output?) -> Void) -> Closeable
+    typealias Observer = (@escaping (Output?) -> Void) -> Closeable
 
-    private let stateHandler: Handler
+    private let observer: Observer
 
-    init(_ commonFlow: CommonFlow<Output>) {
-        self.stateHandler = commonFlow.watch
+    init(_ observer: @escaping Observer) {
+        self.observer = observer
     }
 
     func receive<S>(subscriber: S) where S: Subscriber, Failure == S.Failure, Output == S.Input {
-        let subscription = Subscription(stateHandler: stateHandler, downstream: subscriber)
+        let subscription = Subscription(observer: observer, downstream: subscriber)
         subscriber.receive(subscription: subscription)
     }
 }
@@ -24,12 +24,10 @@ private extension StatePublisher {
         private var downstream: Downstream?
         private let closeable: Closeable
 
-        init(stateHandler: @escaping Handler, downstream: Downstream) {
+        init(observer: @escaping Observer, downstream: Downstream) {
             self.downstream = downstream
-            self.closeable = stateHandler { state in
-                if let state = state {
-                    _ = downstream.receive(state)
-                }
+            self.closeable = observer {
+                _ = $0.map(downstream.receive)
             }
         }
     }
@@ -45,6 +43,7 @@ extension StatePublisher.Subscription: Subscription {
 extension StatePublisher.Subscription: Cancellable {
 
     func cancel() {
+        print("StatePublisher.cancel")
         closeable.close()
         downstream = nil
     }

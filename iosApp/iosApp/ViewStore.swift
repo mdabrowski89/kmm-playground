@@ -38,7 +38,7 @@ final class ViewStore<Action, Result, State>: ObservableObject
         self.state = store.defaultViewState()
         self.acceptAction = store.accept
         self.acceptResult = store.accept
-        self.cancellable = StatePublisher(store.viewStatesFlow)
+        self.cancellable = StatePublisher(store.viewStatesFlow.watch)
             .removeDuplicates(by: isDuplicate)
             .sink { [weak self] in self?.state = $0 }
     }
