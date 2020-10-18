@@ -24,3 +24,16 @@ private var _koin: Koin_coreKoin? = nil
 var koin: Koin_coreKoin {
     return _koin!
 }
+
+extension Koin_coreKoin {
+
+    func get<T: AnyObject>(_ type: T.Type = T.self, parameter: Any) -> T {
+        return self.get(objCClass: T.self, parameter: parameter) as! T
+    }
+
+    func store<Store: AnyObject>(_ type: Store.Type = Store.self) -> StoreFactory<Store> {
+        return { scope in
+            self.get(Store.self, parameter: scope)
+        }
+    }
+}

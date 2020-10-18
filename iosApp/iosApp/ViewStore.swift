@@ -2,16 +2,14 @@ import SwiftUI
 import Combine
 import shared
 
-typealias CoroutineScope = CoroutineScopeIOS
+typealias CoroutineScope = CoroutineScopesKt
 typealias CoroutineScopeType = Kotlinx_coroutines_coreCoroutineScope
 
-extension CoroutineScope {
+extension Closeable {
 
-    static let main: CoroutineScope = CoroutineScopesKt.mainScope()
-}
-
-final class Store {
-    
+    func eraseToAnyCancellable() -> AnyCancellable {
+        .init(close)
+    }
 }
 
 @dynamicMemberLookup
@@ -19,7 +17,7 @@ final class ViewStore<Action, Result, State>: ObservableObject
     where Action: AnyObject, Result: AnyObject, State: AnyObject
 {
 
-    typealias _Store = MviController<Action, Result, State>
+    typealias Store = MviController<Action, Result, State>
 
     private(set) var state: State {
         willSet {
@@ -27,24 +25,26 @@ final class ViewStore<Action, Result, State>: ObservableObject
         }
     }
 
-    private let scope: CoroutineScope
+    private let acceptAction: (@escaping (State) -> Action?) -> Void
 
-    private let _acceptAction: (@escaping (State) -> Action?) -> Void
+    private let acceptResult: (Result) -> Void
 
-    private let _acceptResult: (Result) -> Void
+    private var cancellable: AnyCancellable?
+
+    init(state: State) {
+        self.state = state
+        self.acceptAction = { _ in }
+        self.acceptResult = { _ in }
+    }
 
     init(
-        storeFactory: StoreFactory<_Store>,
-        on scope: CoroutineScope = .main,
+        store: Store,
         removeDupicates isDuplicate: @escaping (State, State) -> Bool
     ) {
-        let store = storeFactory(scope.scope)
-        self._acceptAction = store.accept
-        self._acceptResult = store.accept
         self.state = store.defaultViewState()
-        self.scope = scope
-
-        store.viewStatesFlow.watch { [weak self] state in
+        self.acceptAction = store.accept
+        self.acceptResult = store.accept
+        self.cancellable = store.viewStatesFlow.watch { [weak self] state in
             guard let self = self else { return }
 
             if let state = state, !isDuplicate(self.state, state) {
@@ -52,10 +52,7 @@ final class ViewStore<Action, Result, State>: ObservableObject
                 print(state)
             }
         }
-    }
-
-    deinit {
-        scope.cancel()
+        .eraseToAnyCancellable()
     }
 
     subscript<LocalState>(dynamicMember keyPath: KeyPath<State, LocalState>) -> LocalState {
@@ -63,7 +60,7 @@ final class ViewStore<Action, Result, State>: ObservableObject
     }
 
     func accept(_ intent: @escaping (State) -> Action?) {
-        _acceptAction(intent)
+        acceptAction(intent)
     }
 
     func binding<LocalState>(
@@ -72,9 +69,8 @@ final class ViewStore<Action, Result, State>: ObservableObject
     ) -> Binding<LocalState> {
         return .init(
             get: { get(self.state) },
-            set: {
-                guard !$0 else { return }
-                self._acceptResult(result)
+            set: { _ in
+                self.acceptResult(result)
             }
         )
     }
@@ -82,9 +78,9 @@ final class ViewStore<Action, Result, State>: ObservableObject
 
 extension ViewStore where State: Equatable {
 
-    convenience init(storeFactory: StoreFactory<_Store>) {
+    convenience init(store: Store) {
         self.init(
-            storeFactory: storeFactory,
+            store: store,
             removeDupicates: ==
         )
     }
@@ -103,12 +99,12 @@ struct WithViewStore<Action, Result, State, Content>: View
     @ObservedObject private var viewStore: _ViewStore
 
     init(
-        _ storeFactory: StoreFactory<_Store>,
+        _ store: _Store,
         removeDupicates isDuplicate: @escaping (State, State) -> Bool,
         @ViewBuilder content: @escaping (_ViewStore) -> Content
     ) {
         self.viewStore = .init(
-            storeFactory: storeFactory,
+            store: store,
             removeDupicates: isDuplicate
         )
 
@@ -123,11 +119,11 @@ struct WithViewStore<Action, Result, State, Content>: View
 extension WithViewStore where State: Equatable {
 
     init(
-        _ storeFactory: StoreFactory<_Store>,
+        _ store: _Store,
         @ViewBuilder content: @escaping (_ViewStore) -> Content
     ) {
         self.init(
-            storeFactory,
+            store,
             removeDupicates: ==,
             content: content
         )

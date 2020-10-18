@@ -4,14 +4,16 @@ import shared
 
 typealias StoreFactory<Store> = (CoroutineScopeType) -> Store
 
+typealias HomeStore = MviController<HomeAction, HomeResult, HomeViewState>
+
 struct ContentView: View {
 
-    let storeFactory: StoreFactory<HomeMviController> = koin.store()
+    let store: HomeStore = koin.get(parameter: CoroutineScope.mainScope())
 
     @State var text: String = ""
 
     var body: some View {
-        WithViewStore(storeFactory) { viewStore in
+        WithViewStore(store) { viewStore in
             ZStack {
                 VStack {
                     HStack {
@@ -27,6 +29,8 @@ struct ContentView: View {
                     Button("Delete completed Tasks") {
                         viewStore.accept { $0.deleteCompletedTasks() }
                     }
+                    Divider()
+                    NavigationLink("Test", destination: ContentView())
                     Divider()
                     List(viewStore.tasks ?? []) { task in
                         Button {

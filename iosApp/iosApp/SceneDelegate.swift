@@ -2,20 +2,6 @@ import UIKit
 import SwiftUI
 import shared
 
-extension Koin_coreKoin {
-
-    func get<T: AnyObject>(_ type: T.Type, parameter: Any) -> T {
-        return self.get(objCClass: T.self, parameter: parameter) as! T
-    }
-
-    func store<Store: AnyObject>(_ type: Store.Type = Store.self) -> StoreFactory<Store> {
-        return { scope in
-            self.get(Store.self, parameter: scope)
-        }
-    }
-}
-
-
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     var window: UIWindow?
