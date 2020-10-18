@@ -8,9 +8,13 @@ typealias HomeStore = MviController<HomeAction, HomeResult, HomeViewState>
 
 struct ContentView: View {
 
-    let store: HomeStore = koin.get(parameter: CoroutineScope.mainScope())
+    let store: HomeStore
 
     @State var text: String = ""
+
+    init(store: HomeStore = koin.get(parameter: CoroutineScope.mainScope())) {
+        self.store = store
+    }
 
     var body: some View {
         WithViewStore(store) { viewStore in

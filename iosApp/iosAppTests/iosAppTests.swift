@@ -1,4 +1,7 @@
 import XCTest
+import shared
+import SnapshotTesting
+import SwiftUI
 @testable import iosApp
 
 class iosAppTests: XCTestCase {
@@ -12,15 +15,29 @@ class iosAppTests: XCTestCase {
     }
 
     func testExample() {
-        // This is an example of a functional test case.
-        // Use XCTAssert and related functions to verify your tests produce the correct results.
-    }
+        let viewState = HomeViewState(
+            inProgress: true,
+            tasks: [
+                .init(id: 0, content: "Task #1", isDone: false),
+                .init(id: 1, content: "Task #2", isDone: true)
+                
+            ],
+            newTaskAdded: nil,
+            error: nil
+        )
 
-    func testPerformanceExample() {
-        // This is an example of a performance test case.
-        self.measure {
-            // Put the code you want to measure the time of here.
+        let view = NavigationView {
+            ContentView(
+                store: TestStore(viewState: viewState)
+            )
         }
-    }
+        .navigationViewStyle(StackNavigationViewStyle())
 
+        assertSnapshot(
+            matching: view,
+            as: .image(
+                layout: .device(config: .iPhoneXr)
+            )
+        )
+    }
 }

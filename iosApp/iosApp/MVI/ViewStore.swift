@@ -8,6 +8,9 @@ typealias CoroutineScopeType = Kotlinx_coroutines_coreCoroutineScope
 typealias Store<Action, Result, State> = MviController<Action, Result, State>
     where Action: AnyObject, Result: AnyObject, State: AnyObject
 
+typealias TestStore<Action, Result, State> = TestMviController<Action, Result, State>
+    where Action: AnyObject, Result: AnyObject, State: AnyObject
+
 @dynamicMemberLookup
 final class ViewStore<Action, Result, State>: ObservableObject
     where Action: AnyObject, Result: AnyObject, State: AnyObject
@@ -23,13 +26,7 @@ final class ViewStore<Action, Result, State>: ObservableObject
 
     private let acceptResult: (Result) -> Void
 
-    private var cancellable: AnyCancellable?
-
-    init(state: State) {
-        self.state = state
-        self.acceptAction = { _ in }
-        self.acceptResult = { _ in }
-    }
+    private var viewCancellable: AnyCancellable?
 
     init(
         store: Store<Action, Result, State>,
@@ -38,7 +35,7 @@ final class ViewStore<Action, Result, State>: ObservableObject
         self.state = store.defaultViewState()
         self.acceptAction = store.accept
         self.acceptResult = store.accept
-        self.cancellable = StatePublisher(store.viewStatesFlow.watch)
+        self.viewCancellable = StatePublisher(store.viewStatesFlow.watch)
             .removeDuplicates(by: isDuplicate)
             .sink { [weak self] in self?.state = $0 }
     }
