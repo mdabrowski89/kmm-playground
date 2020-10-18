@@ -15,7 +15,7 @@ class iosAppTests: XCTestCase {
     }
 
     func testExample() {
-        let viewState = HomeViewState(
+        let state = HomeViewState(
             inProgress: true,
             tasks: [
                 .init(id: 0, content: "Task #1", isDone: false),
@@ -27,9 +27,8 @@ class iosAppTests: XCTestCase {
         )
 
         let view = NavigationView {
-            ContentView(
-                store: TestStore(viewState: viewState)
-            )
+            ContentView(store: .testStore(state: state))
+
         }
         .navigationViewStyle(StackNavigationViewStyle())
 

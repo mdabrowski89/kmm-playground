@@ -23,7 +23,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         //     let newTasksAdded = viewState?.newTaskAdded
         //     let error = viewState?.error
         // }
-        
+
         let contentView = NavigationView {
             ContentView()
         }

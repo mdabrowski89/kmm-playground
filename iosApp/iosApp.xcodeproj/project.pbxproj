@@ -23,6 +23,8 @@
 		DCC55BE4253CE88B001400B6 /* StatePublisher.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCC55BE3253CE88B001400B6 /* StatePublisher.swift */; };
 		DCC55BEF253CF162001400B6 /* shared.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7555FFB1242A642300829871 /* shared.framework */; platformFilter = ios; };
 		DCC55BF6253CF1E6001400B6 /* SnapshotTesting in Frameworks */ = {isa = PBXBuildFile; productRef = DCC55BF5253CF1E6001400B6 /* SnapshotTesting */; };
+		DCC55BFA253CF50F001400B6 /* WithViewStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCC55BF9253CF50F001400B6 /* WithViewStore.swift */; };
+		DCC55BFE253CF54E001400B6 /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCC55BFD253CF54E001400B6 /* Utils.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -76,6 +78,8 @@
 		9375D76F252DEFD100AF9D24 /* TasksServiceImpl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TasksServiceImpl.swift; sourceTree = "<group>"; };
 		DC553D4B25345E43001BBC8D /* ViewStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewStore.swift; sourceTree = "<group>"; };
 		DCC55BE3253CE88B001400B6 /* StatePublisher.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StatePublisher.swift; sourceTree = "<group>"; };
+		DCC55BF9253CF50F001400B6 /* WithViewStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WithViewStore.swift; sourceTree = "<group>"; };
+		DCC55BFD253CF54E001400B6 /* Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Utils.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -181,7 +185,9 @@
 		DCC55BE7253CE9F7001400B6 /* MVI */ = {
 			isa = PBXGroup;
 			children = (
+				DCC55BFD253CF54E001400B6 /* Utils.swift */,
 				DC553D4B25345E43001BBC8D /* ViewStore.swift */,
+				DCC55BF9253CF50F001400B6 /* WithViewStore.swift */,
 				DCC55BE3253CE88B001400B6 /* StatePublisher.swift */,
 			);
 			path = MVI;
@@ -350,8 +356,10 @@
 			files = (
 				7555FF7F242A565900829871 /* AppDelegate.swift in Sources */,
 				DCC55BE4253CE88B001400B6 /* StatePublisher.swift in Sources */,
+				DCC55BFA253CF50F001400B6 /* WithViewStore.swift in Sources */,
 				93161975252F1A6E006AB3DB /* Koin.swift in Sources */,
 				7555FF81242A565900829871 /* SceneDelegate.swift in Sources */,
+				DCC55BFE253CF54E001400B6 /* Utils.swift in Sources */,
 				DC553D4C25345E43001BBC8D /* ViewStore.swift in Sources */,
 				9375D770252DEFD100AF9D24 /* TasksServiceImpl.swift in Sources */,
 				7555FF83242A565900829871 /* ContentView.swift in Sources */,

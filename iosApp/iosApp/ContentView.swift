@@ -2,19 +2,13 @@ import SwiftUI
 import Combine
 import shared
 
-typealias StoreFactory<Store> = (CoroutineScopeType) -> Store
-
 typealias HomeStore = MviController<HomeAction, HomeResult, HomeViewState>
 
 struct ContentView: View {
 
-    let store: HomeStore
+    @Koin var store: HomeStore
 
     @State var text: String = ""
-
-    init(store: HomeStore = koin.get(parameter: CoroutineScope.mainScope())) {
-        self.store = store
-    }
 
     var body: some View {
         WithViewStore(store) { viewStore in

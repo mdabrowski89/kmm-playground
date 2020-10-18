@@ -43,7 +43,6 @@ extension StatePublisher.Subscription: Subscription {
 extension StatePublisher.Subscription: Cancellable {
 
     func cancel() {
-        print("StatePublisher.cancel")
         closeable.close()
         downstream = nil
     }
