@@ -14,22 +14,18 @@ fun <T> Flow<T>.asCommonFlow(coroutineScope: CoroutineScope): CommonFlow<T> = Co
  * but with coroutine scope passed as an argument
  */
 
-interface Closeable {
-    fun close()
-}
-
 class CommonFlow<T>(
     private val coroutineScope: CoroutineScope,
     private val origin: Flow<T>
 ) : Flow<T> by origin {
 
-    fun watch(block: (T) -> Unit): Closeable {
+    fun watch(block: (T) -> Unit): () -> Unit {
         onEach {
             block(it)
         }.launchIn(coroutineScope)
 
-        return object: Closeable {
-            override fun close() = coroutineScope.cancel()
+        return {
+            coroutineScope.cancel()
         }
     }
 }

@@ -4,7 +4,7 @@ import shared
 struct StatePublisher<Output>: Publisher where Output: AnyObject {
     typealias Failure = Never
 
-    typealias Observer = (@escaping (Output?) -> Void) -> Closeable
+    typealias Observer = (@escaping (Output?) -> Void) -> () -> Void
 
     private let observer: Observer
 
@@ -22,11 +22,11 @@ private extension StatePublisher {
 
   final class Subscription<Downstream: Subscriber> where Downstream.Input == Output {
         private var downstream: Downstream?
-        private let closeable: Closeable
+        private let cancelObserver: () -> Void
 
         init(observer: @escaping Observer, downstream: Downstream) {
             self.downstream = downstream
-            self.closeable = observer {
+            self.cancelObserver = observer {
                 _ = $0.map(downstream.receive)
             }
         }
@@ -43,7 +43,7 @@ extension StatePublisher.Subscription: Subscription {
 extension StatePublisher.Subscription: Cancellable {
 
     func cancel() {
-        closeable.close()
+        cancelObserver()
         downstream = nil
     }
 }
