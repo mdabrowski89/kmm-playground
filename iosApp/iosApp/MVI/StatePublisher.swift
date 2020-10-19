@@ -1,6 +1,6 @@
 import Combine
 
-struct StatePublisher<Output>: Publisher where Output: AnyObject {
+struct StatePublisher<Output>: Publisher {
     typealias Failure = Never
 
     typealias Observer = (@escaping (Output?) -> Void) -> () -> Void
