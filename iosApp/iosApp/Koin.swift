@@ -11,7 +11,7 @@ import shared
 
 func initKoin() {
     // TODO: could change into provider
-    let taskService = TaskServiceImpl()
+    let taskService = InMemoryTaskService()
     
     let koinApplication = KoinIOSKt.doInitKoin(
         taskService: taskService

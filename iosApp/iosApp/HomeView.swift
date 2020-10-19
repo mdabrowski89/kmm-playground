@@ -4,7 +4,7 @@ import shared
 
 typealias HomeStore = MviController<HomeAction, HomeResult, HomeViewState>
 
-struct ContentView: View {
+struct HomeView: View {
 
     private let store: HomeStore
 
@@ -63,22 +63,6 @@ struct ContentView: View {
             )
         }
     }
-}
-
-extension Task: Identifiable {
-    // no-op
-}
-
-struct ActivityIndicator: UIViewRepresentable {
-
-    func makeUIView(context: Context) -> UIActivityIndicatorView {
-        UIActivityIndicatorView()
-    }
-    
-    func updateUIView(_ uiView: UIActivityIndicatorView, context: Context) {
-        uiView.startAnimating()
-    }
-    
 }
 
 //struct ContentView_Previews: PreviewProvider {
