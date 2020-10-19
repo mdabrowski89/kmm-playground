@@ -34,7 +34,7 @@ struct HomeView: View {
                     Divider()
                     List(viewStore.tasks ?? []) { task in
                         Button {
-                            viewStore.accept { $0.updateTask(taskId: 0, isDone: !task.isDone) }
+                            viewStore.accept { $0.updateTask(taskId: task.id, isDone: !task.isDone) }
                         } label: {
                             HStack {
                                 Text("\(task.content)")
