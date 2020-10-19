@@ -4,16 +4,14 @@ struct WithViewStore<Action, Result, State, Content>: View
     where Action: AnyObject, Result: AnyObject, State: AnyObject, Content: View
 {
 
-    typealias _ViewStore = ViewStore<Action, Result, State>
+    @ObservedObject private var viewStore: ViewStore<Action, Result, State>
 
-    let content: (_ViewStore) -> Content
-
-    @ObservedObject private var viewStore: _ViewStore
+    private let content: (ViewStore<Action, Result, State>) -> Content
 
     init(
         _ store: Store<Action, Result, State>,
         removeDupicates isDuplicate: @escaping (State, State) -> Bool,
-        @ViewBuilder content: @escaping (_ViewStore) -> Content
+        @ViewBuilder content: @escaping (ViewStore<Action, Result, State>) -> Content
     ) {
         self.viewStore = .init(
             store: store,
@@ -32,7 +30,7 @@ extension WithViewStore where State: Equatable {
 
     init(
         _ store: Store<Action, Result, State>,
-        @ViewBuilder content: @escaping (_ViewStore) -> Content
+        @ViewBuilder content: @escaping (ViewStore<Action, Result, State>) -> Content
     ) {
         self.init(
             store,
