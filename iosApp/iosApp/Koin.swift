@@ -10,11 +10,8 @@ import Foundation
 import shared
 
 func initKoin() {
-    // TODO: could change into provider
-    let taskService = InMemoryTaskService()
-    
     let koinApplication = KoinIOSKt.doInitKoin(
-        taskService: taskService
+        taskService: { _, _ in InMemoryTaskService() }
     )
 
     _koin = koinApplication.koin
