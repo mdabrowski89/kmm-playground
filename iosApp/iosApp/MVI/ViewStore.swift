@@ -2,18 +2,6 @@ import SwiftUI
 import Combine
 import shared
 
-typealias CoroutineScope = CoroutineScopeIOS
-typealias CoroutineScopeType = Kotlinx_coroutines_coreCoroutineScope
-
-extension CoroutineScope {
-
-    static let main: CoroutineScope = CoroutineScopesKt.mainScope()
-}
-
-final class Store {
-    
-}
-
 @dynamicMemberLookup
 final class ViewStore<Action, Result, State>: ObservableObject
     where Action: AnyObject, Result: AnyObject, State: AnyObject
@@ -27,43 +15,34 @@ final class ViewStore<Action, Result, State>: ObservableObject
         }
     }
 
-    private let scope: CoroutineScope
+    private let acceptAction: (@escaping (State) -> Action?) -> Void
 
-    private let _acceptAction: (@escaping (State) -> Action?) -> Void
+    private let acceptResult: (Result) -> Void
 
-    private let _acceptResult: (Result) -> Void
+    private var viewCancellable: AnyCancellable?
 
     init(
-        storeFactory: StoreFactory<_Store>,
-        on scope: CoroutineScope = .main,
+        store: _Store,
         removeDupicates isDuplicate: @escaping (State, State) -> Bool
     ) {
-        let store = storeFactory(scope.scope)
-        self._acceptAction = store.accept
-        self._acceptResult = store.accept
         self.state = store.defaultViewState()
-        self.scope = scope
-
-        store.viewStatesFlow.watch { [weak self] state in
-            guard let self = self else { return }
-
-            if let state = state, !isDuplicate(self.state, state) {
-                self.state = state
-                print(state)
-            }
-        }
-    }
-
-    deinit {
-        scope.cancel()
+        self.acceptAction = store.accept
+        self.acceptResult = store.accept
+        self.viewCancellable = StatePublisher(store.viewStatesFlow.watch)
+            .removeDuplicates(by: isDuplicate)
+            .sink { [weak self] in self?.state = $0 }
     }
 
     subscript<LocalState>(dynamicMember keyPath: KeyPath<State, LocalState>) -> LocalState {
-      state[keyPath: keyPath]
+        state[keyPath: keyPath]
     }
 
     func accept(_ intent: @escaping (State) -> Action?) {
-        _acceptAction(intent)
+        acceptAction(intent)
+    }
+
+    func accept(_ result: Result) {
+        acceptResult(result)
     }
 
     func binding<LocalState>(
@@ -73,7 +52,7 @@ final class ViewStore<Action, Result, State>: ObservableObject
         return .init(
             get: { get(self.state) },
             set: { _ in
-                self._acceptResult(result)
+                self.accept(result)
             }
         )
     }
@@ -81,9 +60,9 @@ final class ViewStore<Action, Result, State>: ObservableObject
 
 extension ViewStore where State: Equatable {
 
-    convenience init(storeFactory: StoreFactory<_Store>) {
+    convenience init(store: _Store) {
         self.init(
-            storeFactory: storeFactory,
+            store: store,
             removeDupicates: ==
         )
     }
@@ -102,12 +81,12 @@ struct WithViewStore<Action, Result, State, Content>: View
     @ObservedObject private var viewStore: _ViewStore
 
     init(
-        _ storeFactory: StoreFactory<_Store>,
+        _ store: _Store,
         removeDupicates isDuplicate: @escaping (State, State) -> Bool,
         @ViewBuilder content: @escaping (_ViewStore) -> Content
     ) {
         self.viewStore = .init(
-            storeFactory: storeFactory,
+            store: store,
             removeDupicates: isDuplicate
         )
 
@@ -122,11 +101,11 @@ struct WithViewStore<Action, Result, State, Content>: View
 extension WithViewStore where State: Equatable {
 
     init(
-        _ storeFactory: StoreFactory<_Store>,
+        _ store: _Store,
         @ViewBuilder content: @escaping (_ViewStore) -> Content
     ) {
         self.init(
-            storeFactory,
+            store,
             removeDupicates: ==,
             content: content
         )

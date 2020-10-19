@@ -24,3 +24,10 @@ private var _koin: Koin_coreKoin? = nil
 var koin: Koin_coreKoin {
     return _koin!
 }
+
+extension Koin_coreKoin {
+
+    func get<T: AnyObject>(_ type: T.Type = T.self) -> T {
+        return get(objCClass: T.self) as! T
+    }
+}
