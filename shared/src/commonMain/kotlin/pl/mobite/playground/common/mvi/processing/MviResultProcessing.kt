@@ -42,4 +42,7 @@ open class MviResultProcessing<R : MviResult, VS : MviViewState>(
     }
 
     fun currentViewState(): VS = output.value
+
+    /** Used on iOS implementation of the framework */
+    fun defaultViewState(): VS = mviResultReducer.default()
 }

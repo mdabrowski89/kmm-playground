@@ -1,6 +1,6 @@
 package pl.mobite.playground.di
 
-import org.koin.core.module.Module
+import org.koin.dsl.module
 import pl.mobite.playground.data.usecase.AddTaskUseCase
 import pl.mobite.playground.data.usecase.AddTaskUseCaseImpl
 import pl.mobite.playground.data.usecase.DeleteTasksUseCase
@@ -14,12 +14,11 @@ import pl.mobite.playground.data.usecase.GetTaskUseCaseImpl
 import pl.mobite.playground.data.usecase.UpdateTaskUseCase
 import pl.mobite.playground.data.usecase.UpdateTaskUseCaseImpl
 
-inline val Module.TaskUseCaseModule
-    get() = configure {
-        factory<AddTaskUseCase> { AddTaskUseCaseImpl(get()) }
-        factory<GetTaskUseCase> { GetTaskUseCaseImpl(get()) }
-        factory<GetAllTasksUseCase> { GetAllTasksUseCaseImpl(get()) }
-        factory<GetAllDoneTasksUseCase> { GetAllDoneTasksUseCaseImpl(get()) }
-        factory<UpdateTaskUseCase> { UpdateTaskUseCaseImpl(get()) }
-        factory<DeleteTasksUseCase> { DeleteTasksUseCaseImpl(get()) }
-    }
+val taskUseCaseModule = module {
+    factory<AddTaskUseCase> { AddTaskUseCaseImpl(get()) }
+    factory<GetTaskUseCase> { GetTaskUseCaseImpl(get()) }
+    factory<GetAllTasksUseCase> { GetAllTasksUseCaseImpl(get()) }
+    factory<GetAllDoneTasksUseCase> { GetAllDoneTasksUseCaseImpl(get()) }
+    factory<UpdateTaskUseCase> { UpdateTaskUseCaseImpl(get()) }
+    factory<DeleteTasksUseCase> { DeleteTasksUseCaseImpl(get()) }
+}
