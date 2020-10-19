@@ -21,6 +21,7 @@
 		9375D770252DEFD100AF9D24 /* TasksServiceImpl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9375D76F252DEFD100AF9D24 /* TasksServiceImpl.swift */; };
 		DC553D4C25345E43001BBC8D /* ViewStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC553D4B25345E43001BBC8D /* ViewStore.swift */; };
 		DCDE7ED5253DDD110028CE3B /* StatePublisher.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCDE7ED4253DDD110028CE3B /* StatePublisher.swift */; };
+		DCDE7EDE253DE2010028CE3B /* Store.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCDE7EDD253DE2010028CE3B /* Store.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -74,6 +75,7 @@
 		9375D76F252DEFD100AF9D24 /* TasksServiceImpl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TasksServiceImpl.swift; sourceTree = "<group>"; };
 		DC553D4B25345E43001BBC8D /* ViewStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewStore.swift; sourceTree = "<group>"; };
 		DCDE7ED4253DDD110028CE3B /* StatePublisher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatePublisher.swift; sourceTree = "<group>"; };
+		DCDE7EDD253DE2010028CE3B /* Store.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Store.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -179,6 +181,7 @@
 			children = (
 				DCDE7ED4253DDD110028CE3B /* StatePublisher.swift */,
 				DC553D4B25345E43001BBC8D /* ViewStore.swift */,
+				DCDE7EDD253DE2010028CE3B /* Store.swift */,
 			);
 			path = MVI;
 			sourceTree = "<group>";
@@ -339,6 +342,7 @@
 				7555FF7F242A565900829871 /* AppDelegate.swift in Sources */,
 				DCDE7ED5253DDD110028CE3B /* StatePublisher.swift in Sources */,
 				93161975252F1A6E006AB3DB /* Koin.swift in Sources */,
+				DCDE7EDE253DE2010028CE3B /* Store.swift in Sources */,
 				7555FF81242A565900829871 /* SceneDelegate.swift in Sources */,
 				DC553D4C25345E43001BBC8D /* ViewStore.swift in Sources */,
 				9375D770252DEFD100AF9D24 /* TasksServiceImpl.swift in Sources */,

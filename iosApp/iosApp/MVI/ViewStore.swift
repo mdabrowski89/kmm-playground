@@ -7,8 +7,6 @@ final class ViewStore<Action, Result, State>: ObservableObject
     where Action: AnyObject, Result: AnyObject, State: AnyObject
 {
 
-    typealias _Store = MviController<Action, Result, State>
-
     private(set) var state: State {
         willSet {
             objectWillChange.send()
@@ -22,7 +20,7 @@ final class ViewStore<Action, Result, State>: ObservableObject
     private var viewCancellable: AnyCancellable?
 
     init(
-        store: _Store,
+        store: Store<Action, Result, State>,
         removeDupicates isDuplicate: @escaping (State, State) -> Bool
     ) {
         self.state = store.defaultViewState()
@@ -60,7 +58,7 @@ final class ViewStore<Action, Result, State>: ObservableObject
 
 extension ViewStore where State: Equatable {
 
-    convenience init(store: _Store) {
+    convenience init(store: Store<Action, Result, State>) {
         self.init(
             store: store,
             removeDupicates: ==
@@ -72,8 +70,6 @@ struct WithViewStore<Action, Result, State, Content>: View
     where Action: AnyObject, Result: AnyObject, State: AnyObject, Content: View
 {
 
-    typealias _Store = MviController<Action, Result, State>
-
     typealias _ViewStore = ViewStore<Action, Result, State>
 
     let content: (_ViewStore) -> Content
@@ -81,7 +77,7 @@ struct WithViewStore<Action, Result, State, Content>: View
     @ObservedObject private var viewStore: _ViewStore
 
     init(
-        _ store: _Store,
+        _ store: Store<Action, Result, State>,
         removeDupicates isDuplicate: @escaping (State, State) -> Bool,
         @ViewBuilder content: @escaping (_ViewStore) -> Content
     ) {
@@ -101,7 +97,7 @@ struct WithViewStore<Action, Result, State, Content>: View
 extension WithViewStore where State: Equatable {
 
     init(
-        _ store: _Store,
+        _ store: Store<Action, Result, State>,
         @ViewBuilder content: @escaping (_ViewStore) -> Content
     ) {
         self.init(
