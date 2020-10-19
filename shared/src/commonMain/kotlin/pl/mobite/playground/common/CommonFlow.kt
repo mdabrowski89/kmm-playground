@@ -13,7 +13,6 @@ fun <T> Flow<T>.asCommonFlow(coroutineScope: CoroutineScope): CommonFlow<T> = Co
  *
  * but with coroutine scope passed as an argument
  */
-
 class CommonFlow<T>(
     private val coroutineScope: CoroutineScope,
     private val origin: Flow<T>

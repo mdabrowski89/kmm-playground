@@ -32,8 +32,6 @@ struct ContentView: View {
                         viewStore.accept { $0.deleteCompletedTasks() }
                     }
                     Divider()
-                    NavigationLink("Test", destination: ContentView())
-                    Divider()
                     List(viewStore.tasks ?? []) { task in
                         Button {
                             viewStore.accept { $0.updateTask(taskId: 0, isDone: !task.isDone) }
