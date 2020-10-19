@@ -27,7 +27,9 @@ class iosAppTests: XCTestCase {
         )
 
         let view = NavigationView {
-            ContentView(store: .testStore(state: state))
+            ContentView(
+                store: TestStore(viewState: state)
+            )
 
         }
         .navigationViewStyle(StackNavigationViewStyle())

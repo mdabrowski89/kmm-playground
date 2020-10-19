@@ -6,9 +6,13 @@ typealias HomeStore = MviController<HomeAction, HomeResult, HomeViewState>
 
 struct ContentView: View {
 
-    @Koin var store: HomeStore
+    private let store: HomeStore
 
-    @State var text: String = ""
+    @State private var text: String = ""
+
+    init(store: HomeStore = koin.get()) {
+        self.store = store
+    }
 
     var body: some View {
         WithViewStore(store) { viewStore in

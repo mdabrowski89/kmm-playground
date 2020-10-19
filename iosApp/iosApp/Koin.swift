@@ -35,22 +35,3 @@ extension Koin_coreKoin {
         return self.get(objCClass: T.self, parameter: parameter) as! T
     }
 }
-
-@propertyWrapper
-struct Koin<Value> where Value: AnyObject {
-
-    let wrappedValue: Value
-
-    init(_ value: Value = koin.get()) {
-        self.wrappedValue = value
-    }
-}
-
-extension Koin {
-
-    static func testStore<Action, Result, State>(
-        state: State
-    ) -> Koin<Store<Action, Result, State>> {
-        return .init(TestStore(viewState: state))
-    }
-}
