@@ -1,6 +1,7 @@
 package pl.mobite.playground.ui.components.home
 
 import android.os.Bundle
+import android.os.Parcelable
 import android.view.View
 import android.widget.Button
 import android.widget.EditText
@@ -10,10 +11,9 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.asLiveData
 import androidx.recyclerview.widget.RecyclerView
+import kotlinx.android.parcel.Parcelize
 import pl.mobite.playground.R
-import pl.mobite.playground.domain.home.mvi.impl.HomeResult.EventConsumption
-import pl.mobite.playground.domain.home.mvi.impl.HomeResult.EventConsumption.ErrorConsumed
-import pl.mobite.playground.domain.home.mvi.impl.HomeResult.EventConsumption.NewTaskAddedConsumed
+import pl.mobite.playground.common.mvi.MviEvent
 import pl.mobite.playground.domain.home.mvi.impl.HomeViewState
 import pl.mobite.playground.ui.components.home.recyclerview.TasksAdapter
 import pl.mobite.playground.utils.mviController
@@ -35,6 +35,14 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         homeMviController.accept { updateTask(taskId, isChecked) }
     }
 
+    private lateinit var homeViewStateEventsCache: HomeViewStateEventsCache
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        homeViewStateEventsCache = savedInstanceState?.getParcelable(HomeViewStateEventsCache.KEY)
+            ?: HomeViewStateEventsCache()
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -50,6 +58,11 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         super.onStart()
         /** send action to load tasks list if list is empty */
         homeMviController.accept { loadDataIfNeeded() }
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putParcelable(HomeViewStateEventsCache.KEY, homeViewStateEventsCache)
     }
 
     private fun initButtons() {
@@ -77,25 +90,34 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
                 tasksAdapter.tasks = newTasks.toList()
             }
 
-            newTaskAdded?.let {
-                if (it) {
-                    newTaskInput.setText("")
-                    homeMviController.accept(NewTaskAddedConsumed)
-                }
-            }
-
-            error?.let {
-                Toast.makeText(requireContext(), "Error occurred", Toast.LENGTH_SHORT).show()
-                homeMviController.accept(ErrorConsumed)
-            }
-
-            /*newTaskAdded?.consume {
+            taskAddedEvent?.consume(homeViewStateEventsCache.lastConsumedTaskAddedEventId) {
                 newTaskInput.setText("")
+                homeViewStateEventsCache.lastConsumedTaskAddedEventId = it.id
             }
 
-            error?.consume {
+            errorEvent?.consume(homeViewStateEventsCache.lastConsumedErrorEventId) {
                 Toast.makeText(requireContext(), "Error occurred", Toast.LENGTH_SHORT).show()
-            }*/
+                homeViewStateEventsCache.lastConsumedErrorEventId = it.id
+            }
         }
+    }
+}
+
+// TODO: extract from here to some better location
+fun <T> MviEvent<T>.consume(lastConsumedEventId: String?, action: (MviEvent<T>) -> Unit) {
+    if (this.id != lastConsumedEventId) {
+        action(this)
+    }
+}
+
+// TODO: replace with a generic cache class
+@Parcelize
+data class HomeViewStateEventsCache(
+    var lastConsumedTaskAddedEventId: String? = null,
+    var lastConsumedErrorEventId: String? = null
+) : Parcelable {
+
+    companion object {
+        const val KEY = "HomeViewStateEventsCache"
     }
 }
