@@ -3,18 +3,21 @@ package pl.mobite.playground.di
 import kotlinx.cinterop.ObjCClass
 import kotlinx.cinterop.getOriginalKotlinClass
 import org.koin.core.Koin
+import org.koin.core.definition.Definition
 import org.koin.core.parameter.parametersOf
 import org.koin.core.qualifier.Qualifier
 import org.koin.dsl.module
 import pl.mobite.playground.data.service.TaskService
 
-fun doInitKoin(taskService: TaskService) = doInitKoin {
-    modules(
-        module {
-            single { taskService }
-        }
-    )
-}
+fun doInitKoin(taskService: Definition<TaskService>) = doInitKoin(
+    appDeclaration = {
+        modules(
+            module {
+                factory(definition = taskService)
+            }
+        )
+    }
+)
 
 fun Koin.get(objCClass: ObjCClass, qualifier: Qualifier?, parameter: Any): Any {
     val kClazz = getOriginalKotlinClass(objCClass)!!

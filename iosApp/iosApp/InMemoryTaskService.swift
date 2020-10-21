@@ -1,20 +1,11 @@
-//
-//  TasksServiceImpl.swift
-//  iosApp
-//
-//  Created by Mariusz Dabrowski on 07/10/2020.
-//  Copyright © 2020 orgName. All rights reserved.
-//
-
 import Foundation
 import shared
 
-func freeze(_ object: Any) {
-    FreezerKt.freeze(obj: object)
+extension Task: Identifiable {
+    // no-op
 }
 
-// TODO: add proper implementation
-final class TaskServiceImpl: TaskService {
+final class InMemoryTaskService: TaskService {
 
     private var tasks: [Task] = []
 
