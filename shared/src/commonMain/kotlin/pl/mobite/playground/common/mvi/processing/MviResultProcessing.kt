@@ -10,6 +10,16 @@ import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.flow.onEach
 
+@Suppress("EXPERIMENTAL_API_USAGE")
+open class MviResultProcessingProvider<R : MviResult, VS : MviViewState>(
+    private val mviResultReducer: MviResultReducer<R, VS>
+) {
+    fun get(initialValue: VS?) = MviResultProcessing(
+        initialValue = initialValue,
+        mviResultReducer = mviResultReducer,
+    )
+}
+
 /**
  * Wrapper around MviResultReducer.
  *
@@ -23,17 +33,17 @@ import kotlinx.coroutines.flow.onEach
  * @param mviResultReducer object responsible for reducing MviResults with MviViewState
  * and producing new MviViewState
  */
+
 @Suppress("EXPERIMENTAL_API_USAGE")
 open class MviResultProcessing<R : MviResult, VS : MviViewState>(
-    mviViewStateCache: MviViewStateCache<VS>,
+    initialValue: VS?,
     private val mviResultReducer: MviResultReducer<R, VS>
 ) {
-    private val output = MutableStateFlow(value = mviViewStateCache.get() ?: mviResultReducer.default())
+    private val output = MutableStateFlow(value = initialValue ?: mviResultReducer.default())
 
     val savableOutput = output
         .filter { it.isSavable() }
         .mapNotNull { mviResultReducer.fold(it) }
-        .onEach { mviViewStateCache.set(it) }
 
     val viewStatesFlow: Flow<VS> = output
 

@@ -1,11 +1,19 @@
 package pl.mobite.playground.common.mvi.processing
 
-import pl.mobite.playground.common.mvi.api.MviAction
-import pl.mobite.playground.common.mvi.api.MviActionProcessor
-import pl.mobite.playground.common.mvi.api.MviResult
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
+import pl.mobite.playground.common.mvi.api.*
 import pl.mobite.playground.common.mvi.processing.internal.ProcessingFlow
+
+
+@Suppress("EXPERIMENTAL_API_USAGE")
+open class MviActionProcessingProvider<A : MviAction, R : MviResult>(
+    private val mviActionProcessor: MviActionProcessor<A, R>
+) {
+    fun get() = MviActionProcessing(
+        mviActionProcessor = mviActionProcessor
+    )
+}
 
 /**
  * Wrapper around MviActionProcessors.

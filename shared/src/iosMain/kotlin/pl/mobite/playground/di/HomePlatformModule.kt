@@ -15,7 +15,7 @@ actual val homePlatformModule = module {
     factory {
         HomeResultProcessing(
             homeResultReducer = get(),
-            homeViewStateCache = get()
+            initialValue = get()
         )
     }
 

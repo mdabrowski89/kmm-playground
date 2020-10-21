@@ -13,6 +13,9 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import pl.mobite.playground.common.CommonFlow
 import pl.mobite.playground.common.asCommonFlow
+import pl.mobite.playground.common.mvi.api.MviViewStateCache
+import pl.mobite.playground.common.mvi.processing.MviActionProcessingProvider
+import pl.mobite.playground.common.mvi.processing.MviResultProcessingProvider
 
 /**
  * Wrapper around whole Mvi flow: MviAction -> processing -> MviResult -> reducing -> MviViewState
@@ -20,15 +23,20 @@ import pl.mobite.playground.common.asCommonFlow
  * MviAction's are consumed with `fun accept(...)` and flow with MviViewStates is available with
  * the property `val viewStatesFlow`
  *
- * @param mviActionProcessing
- * @param mviResultProcessing
+ * @param mviActionProcessingProvider
+ * @param mviResultProcessingProvider
+ * @param mviViewStateCache
  * @param coroutineScope
  */
 open class MviController<A : MviAction, R : MviResult, VS : MviViewState>(
-    private val mviActionProcessing: MviActionProcessing<A, R>,
-    private val mviResultProcessing: MviResultProcessing<R, VS>,
+    mviActionProcessingProvider: MviActionProcessingProvider<A, R>,
+    mviResultProcessingProvider: MviResultProcessingProvider<R, VS>,
+    private val mviViewStateCache: MviViewStateCache<VS>,
     private val coroutineScope: CoroutineScope
 ) {
+    private val mviActionProcessing = mviActionProcessingProvider.get()
+    private val mviResultProcessing = mviResultProcessingProvider.get(mviViewStateCache.get())
+
     val viewStatesFlow: CommonFlow<VS> = mviResultProcessing
         .viewStatesFlow
         .asCommonFlow(coroutineScope)
@@ -38,7 +46,9 @@ open class MviController<A : MviAction, R : MviResult, VS : MviViewState>(
             .onEach(mviResultProcessing::accept)
             .launchIn(coroutineScope)
 
-        mviResultProcessing.savableOutput.launchIn(coroutineScope)
+        mviResultProcessing.savableOutput
+            .onEach(mviViewStateCache::set)
+            .launchIn(coroutineScope)
     }
 
     fun accept(intent: VS.() -> A?) {
