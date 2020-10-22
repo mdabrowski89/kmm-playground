@@ -1,7 +1,6 @@
 package pl.mobite.playground.domain.home.mvi
 
-import kotlinx.coroutines.CoroutineScope
-import pl.mobite.playground.common.mvi.MviController
+import pl.mobite.playground.common.mvi.MviControllerProvider
 import pl.mobite.playground.common.mvi.processing.MviActionProcessingProvider
 import pl.mobite.playground.common.mvi.processing.MviResultProcessingProvider
 import pl.mobite.playground.domain.home.mvi.impl.*
@@ -33,16 +32,12 @@ import pl.mobite.playground.domain.home.mvi.impl.*
  * However (in my opinion) providing strong type is less error prone then named() qualifiers.
  */
 
-class HomeMviController(
-    homeActionProcessing: HomeActionProcessingProvider,
-    homeResultProcessing: HomeResultProcessingProvider,
-    cache: HomeViewStateCache,
-    coroutineScope: CoroutineScope
-) : MviController<HomeAction, HomeResult, HomeViewState>(
-    mviActionProcessingProvider = homeActionProcessing,
-    mviResultProcessingProvider = homeResultProcessing,
-    mviViewStateCache = cache,
-    coroutineScope = coroutineScope
+class HomeControllerProvider(
+    homeActionProcessingProvider: HomeActionProcessingProvider,
+    homeResultProcessingProvider: HomeResultProcessingProvider,
+) : MviControllerProvider<HomeAction, HomeResult, HomeViewState>(
+    mviActionProcessingProvider = homeActionProcessingProvider,
+    mviResultProcessingProvider = homeResultProcessingProvider,
 )
 
 class HomeActionProcessingProvider(

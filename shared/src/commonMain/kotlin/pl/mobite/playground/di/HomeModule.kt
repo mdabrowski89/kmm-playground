@@ -1,7 +1,9 @@
 package pl.mobite.playground.di
 
 import org.koin.dsl.module
+import pl.mobite.playground.common.mvi.MviControllerProvider
 import pl.mobite.playground.domain.home.mvi.HomeActionProcessingProvider
+import pl.mobite.playground.domain.home.mvi.HomeControllerProvider
 import pl.mobite.playground.domain.home.mvi.HomeResultProcessingProvider
 import pl.mobite.playground.domain.home.mvi.impl.AddTaskActionProcessor
 import pl.mobite.playground.domain.home.mvi.impl.DeleteCompletedTasksActionProcessor
@@ -29,4 +31,11 @@ val homeModule = module {
     }
 
     factory { HomeResultReducer() }
+
+    factory {
+        HomeControllerProvider(
+            homeActionProcessingProvider = get(),
+            homeResultProcessingProvider = get(),
+        )
+    }
 }
