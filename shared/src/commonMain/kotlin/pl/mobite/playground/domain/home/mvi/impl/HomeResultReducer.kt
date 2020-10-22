@@ -1,8 +1,6 @@
 package pl.mobite.playground.domain.home.mvi.impl
 
 import pl.mobite.playground.common.mvi.api.MviResultReducer
-import pl.mobite.playground.common.ViewStateEmptyEvent
-import pl.mobite.playground.common.ViewStateErrorEvent
 import pl.mobite.playground.domain.home.mvi.impl.HomeResult.AddTaskResult
 import pl.mobite.playground.domain.home.mvi.impl.HomeResult.DeleteCompletedTasksResult
 import pl.mobite.playground.domain.home.mvi.impl.HomeResult.ErrorResult

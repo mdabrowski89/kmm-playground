@@ -2,16 +2,20 @@ import SwiftUI
 import Combine
 import shared
 
-typealias StoreFactory<Store> = (CoroutineScopeType) -> Store
+typealias HomeStore = MviController<HomeAction, HomeResult, HomeViewState>
 
-struct ContentView: View {
+struct HomeView: View {
 
-    let storeFactory: StoreFactory<HomeMviController> = koin.store()
+    private let store: HomeStore
 
-    @State var text: String = ""
+    @State private var text: String = ""
+
+    init(store: HomeStore = koin.get()) {
+        self.store = store
+    }
 
     var body: some View {
-        WithViewStore(storeFactory) { viewStore in
+        WithViewStore(store) { viewStore in
             ZStack {
                 VStack {
                     HStack {
@@ -30,7 +34,7 @@ struct ContentView: View {
                     Divider()
                     List(viewStore.tasks ?? []) { task in
                         Button {
-                            viewStore.accept { $0.updateTask(taskId: 0, isDone: !task.isDone) }
+                            viewStore.accept { $0.updateTask(taskId: task.id, isDone: !task.isDone) }
                         } label: {
                             HStack {
                                 Text("\(task.content)")
@@ -59,22 +63,6 @@ struct ContentView: View {
             )
         }
     }
-}
-
-extension Task: Identifiable {
-    // no-op
-}
-
-struct ActivityIndicator: UIViewRepresentable {
-
-    func makeUIView(context: Context) -> UIActivityIndicatorView {
-        UIActivityIndicatorView()
-    }
-    
-    func updateUIView(_ uiView: UIActivityIndicatorView, context: Context) {
-        uiView.startAnimating()
-    }
-    
 }
 
 //struct ContentView_Previews: PreviewProvider {

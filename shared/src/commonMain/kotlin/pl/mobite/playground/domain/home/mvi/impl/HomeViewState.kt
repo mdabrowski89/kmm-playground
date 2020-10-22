@@ -2,8 +2,6 @@ package pl.mobite.playground.domain.home.mvi.impl
 
 import pl.mobite.playground.common.Parcelize
 import pl.mobite.playground.common.mvi.api.MviViewState
-import pl.mobite.playground.common.ViewStateEmptyEvent
-import pl.mobite.playground.common.ViewStateErrorEvent
 import pl.mobite.playground.domain.home.mvi.impl.HomeAction.AddTaskAction
 import pl.mobite.playground.domain.home.mvi.impl.HomeAction.DeleteCompletedTasksAction
 import pl.mobite.playground.domain.home.mvi.impl.HomeAction.LoadTasksAction
