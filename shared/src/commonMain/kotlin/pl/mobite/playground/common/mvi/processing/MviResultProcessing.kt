@@ -10,6 +10,13 @@ import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.flow.onEach
 
+/**
+ * Provider enables late initialization for [MviResultReducer] otherwise dependency would
+ * had to be provided during dependency injection state. This relaxes configuration stage
+ *
+ * @param mviResultReducer reducer which will be seeded with provided initialValue
+ * within [get] method
+ * */
 @Suppress("EXPERIMENTAL_API_USAGE")
 open class MviResultProcessingProvider<R : MviResult, VS : MviViewState>(
     private val mviResultReducer: MviResultReducer<R, VS>
@@ -27,13 +34,11 @@ open class MviResultProcessingProvider<R : MviResult, VS : MviViewState>(
  * it with the latest MviViewState and produces new MviViewState which is available outside with
  * a property `val viewStatesFlow`
  *
- * @param mviViewStateCache an implementation of cache which could hold an initial instance of
- * a MviViewState. It should be used when recreating MviResultProcessing object to provide the
- * latest MviViewState (it is better to use the latest one and not the default one)
+ * @param initialValue if value is provided (not null) then it will be used to seed initial state
+ * otherwise [MviResultReducer.default] will be used
  * @param mviResultReducer object responsible for reducing MviResults with MviViewState
  * and producing new MviViewState
  */
-
 @Suppress("EXPERIMENTAL_API_USAGE")
 open class MviResultProcessing<R : MviResult, VS : MviViewState>(
     initialValue: VS?,

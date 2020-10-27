@@ -1,29 +1,19 @@
 package pl.mobite.playground.di
 
 import org.koin.dsl.module
-import pl.mobite.playground.common.mvi.MviControllerProvider
-import pl.mobite.playground.domain.home.mvi.HomeActionProcessingProvider
+import pl.mobite.playground.domain.home.mvi.HomeActionProcessing
 import pl.mobite.playground.domain.home.mvi.HomeControllerProvider
 import pl.mobite.playground.domain.home.mvi.HomeResultProcessingProvider
-import pl.mobite.playground.domain.home.mvi.impl.AddTaskActionProcessor
-import pl.mobite.playground.domain.home.mvi.impl.DeleteCompletedTasksActionProcessor
-import pl.mobite.playground.domain.home.mvi.impl.HomeActionProcessor
-import pl.mobite.playground.domain.home.mvi.impl.HomeResultReducer
-import pl.mobite.playground.domain.home.mvi.impl.LoadTasksActionProcessor
-import pl.mobite.playground.domain.home.mvi.impl.UpdateTaskActionProcessor
+import pl.mobite.playground.domain.home.mvi.impl.*
 
 val homeModule = module {
-    factory {
-        HomeActionProcessor(
-            loadTasksActionProcessor = LoadTasksActionProcessor(get()),
-            addTaskActionProcessor = AddTaskActionProcessor(get()),
-            updateTaskActionProcessor = UpdateTaskActionProcessor(get(), get()),
-            deleteCompletedTasksActionProcessor = DeleteCompletedTasksActionProcessor(get(), get())
-        )
-    }
+    factory { LoadTasksActionProcessor(get()) }
+    factory { AddTaskActionProcessor(get()) }
+    factory { UpdateTaskActionProcessor(get(), get()) }
+    factory { DeleteCompletedTasksActionProcessor(get(), get()) }
 
     factory {
-        HomeActionProcessingProvider(homeActionProcessor = get())
+        HomeActionProcessing(get(), get(), get(), get())
     }
 
     factory {
@@ -34,7 +24,7 @@ val homeModule = module {
 
     factory {
         HomeControllerProvider(
-            homeActionProcessingProvider = get(),
+            homeActionProcessing = get(),
             homeResultProcessingProvider = get(),
         )
     }

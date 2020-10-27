@@ -1,17 +1,16 @@
 package pl.mobite.playground.common.mvi
 
-import pl.mobite.playground.common.mvi.processing.MviActionProcessing
-import pl.mobite.playground.common.mvi.processing.MviResultProcessing
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.cancel
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import pl.mobite.playground.common.CommonFlow
 import pl.mobite.playground.common.asCommonFlow
-import pl.mobite.playground.common.mvi.api.*
-import pl.mobite.playground.common.mvi.processing.MviActionProcessingProvider
+import pl.mobite.playground.common.mvi.api.MviAction
+import pl.mobite.playground.common.mvi.api.MviResult
+import pl.mobite.playground.common.mvi.api.MviViewState
+import pl.mobite.playground.common.mvi.api.MviViewStateCache
+import pl.mobite.playground.common.mvi.processing.MviActionProcessing
 import pl.mobite.playground.common.mvi.processing.MviResultProcessingProvider
 
 /**
@@ -26,12 +25,11 @@ import pl.mobite.playground.common.mvi.processing.MviResultProcessingProvider
  * @param coroutineScope
  */
 open class MviController<A : MviAction, R : MviResult, VS : MviViewState>(
-    mviActionProcessingProvider: MviActionProcessingProvider<A, R>,
+    private val mviActionProcessing: MviActionProcessing<A, R>,
     mviResultProcessingProvider: MviResultProcessingProvider<R, VS>,
     private val mviViewStateCache: MviViewStateCache<VS>,
     private val coroutineScope: CoroutineScope,
 ) {
-    private val mviActionProcessing = mviActionProcessingProvider.get()
     private val mviResultProcessing = mviResultProcessingProvider.get(mviViewStateCache.get())
 
     val viewStatesFlow: CommonFlow<VS> = mviResultProcessing
@@ -68,14 +66,14 @@ open class MviController<A : MviAction, R : MviResult, VS : MviViewState>(
 
 @Suppress("EXPERIMENTAL_API_USAGE")
 open class MviControllerProvider<A : MviAction, R : MviResult, VS : MviViewState>(
-    private val mviActionProcessingProvider: MviActionProcessingProvider<A, R>,
+    private val mviActionProcessing: MviActionProcessing<A, R>,
     private val mviResultProcessingProvider: MviResultProcessingProvider<R, VS>,
 ) {
     fun get(
         mviViewStateCache: MviViewStateCache<VS>,
         coroutineScope: CoroutineScope,
     ) = MviController(
-        mviActionProcessingProvider = mviActionProcessingProvider,
+        mviActionProcessing = mviActionProcessing,
         mviResultProcessingProvider = mviResultProcessingProvider,
         mviViewStateCache = mviViewStateCache,
         coroutineScope = coroutineScope

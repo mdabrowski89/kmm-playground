@@ -1,14 +1,11 @@
 package pl.mobite.playground.domain.home.mvi.impl
 
 import pl.mobite.playground.common.mvi.api.MviResultReducer
-import pl.mobite.playground.domain.home.mvi.impl.HomeResult.AddTaskResult
-import pl.mobite.playground.domain.home.mvi.impl.HomeResult.DeleteCompletedTasksResult
 import pl.mobite.playground.domain.home.mvi.impl.HomeResult.ErrorResult
 import pl.mobite.playground.domain.home.mvi.impl.HomeResult.EventConsumption.ErrorConsumed
 import pl.mobite.playground.domain.home.mvi.impl.HomeResult.EventConsumption.NewTaskAddedConsumed
 import pl.mobite.playground.domain.home.mvi.impl.HomeResult.InProgressResult
 import pl.mobite.playground.domain.home.mvi.impl.HomeResult.LoadTasksResult
-import pl.mobite.playground.domain.home.mvi.impl.HomeResult.UpdateTaskResult
 
 /**
  * Reducer which creates new ViewState based on the last ViewState and new Result
@@ -20,11 +17,9 @@ class HomeResultReducer : MviResultReducer<HomeResult, HomeViewState> {
             is InProgressResult -> reduce(result)
             is ErrorResult -> reduce(result)
             is LoadTasksResult -> reduce(result)
-            is AddTaskResult -> reduce(result)
-            is UpdateTaskResult -> reduce(result)
-            is DeleteCompletedTasksResult -> reduce(result)
             is NewTaskAddedConsumed -> reduce(result)
             is ErrorConsumed -> reduce(result)
+            is HomeResult.InternalResults -> this
         }
     }
 
@@ -44,29 +39,6 @@ class HomeResultReducer : MviResultReducer<HomeResult, HomeViewState> {
 
     private fun HomeViewState.reduce(result: LoadTasksResult) =
         copy(inProgress = false , tasks = result.tasks)
-
-    private fun HomeViewState.reduce(result: AddTaskResult) =
-        copy(
-            inProgress = false,
-            tasks = tasks?.toMutableList()?.apply { add(result.addedTask) }?.toList(),
-            newTaskAdded = true
-        )
-
-    private fun HomeViewState.reduce(result: UpdateTaskResult) =
-        copy(
-            inProgress = false,
-            tasks = tasks?.map {
-                if (it.id == result.updatedTask.id) result.updatedTask else it
-            } // replace updated task in the tasks list
-        )
-
-    private fun HomeViewState.reduce(result: DeleteCompletedTasksResult) =
-        copy(
-            inProgress = false,
-            tasks = with(result.deletedTasks.map { it.id }) {
-                tasks?.filterNot { it.id in this }
-            }
-        )
 
     private fun HomeViewState.reduce(result: NewTaskAddedConsumed) =
         copy(newTaskAdded = null)
