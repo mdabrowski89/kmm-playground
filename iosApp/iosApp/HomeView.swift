@@ -56,8 +56,26 @@ struct HomeView: View {
     }
 }
 
-//struct ContentView_Previews: PreviewProvider {
-//    static var previews: some View {
-//        ContentView()
-//    }
-//}
+#if DEBUG
+extension HomeViewState {
+
+    static func preview() -> HomeViewState {
+        .init(
+            inProgress: true,
+            tasks: nil,
+            newTaskAdded: nil,
+            error: nil
+        )
+    }
+}
+
+struct HomeView_Previews: PreviewProvider {
+
+    static var previews: some View {
+        NavigationView {
+            HomeView(store: .preview(state: .preview()))
+        }
+        .navigationViewStyle(StackNavigationViewStyle())
+    }
+}
+#endif
