@@ -7,5 +7,5 @@ import pl.mobite.playground.common.ViewModel
 import pl.mobite.playground.domain.home.mvi.HomeMviController
 
 class HomeViewModel: ViewModel<HomeAction, HomeResult, HomeViewState>(MainScope()) {
-    override val mviController: HomeMviController by inject { parametersOf(coroutineScope) }
+    override val mviController: HomeMviController by inject { parametersOf(viewModelScope) }
 }
