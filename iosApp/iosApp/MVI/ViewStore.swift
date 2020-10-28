@@ -18,7 +18,7 @@ final class ViewStore<Action, State>: ObservableObject {
     private var viewCancellable: AnyCancellable?
 
     init(
-        store: StoreProxy<Action, State>,
+        store: AnyStore<Action, State>,
         removeDupicates isDuplicate: @escaping (State, State) -> Bool
     ) {
         self.state = store.defaultState()
@@ -44,7 +44,7 @@ final class ViewStore<Action, State>: ObservableObject {
 
 extension ViewStore where State: Equatable {
 
-    convenience init(store: StoreProxy<Action, State>) {
+    convenience init(store: AnyStore<Action, State>) {
         self.init(
             store: store,
             removeDupicates: ==

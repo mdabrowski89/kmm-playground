@@ -21,7 +21,7 @@
 		9375D770252DEFD100AF9D24 /* InMemoryTaskService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9375D76F252DEFD100AF9D24 /* InMemoryTaskService.swift */; };
 		DC553D4C25345E43001BBC8D /* ViewStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC553D4B25345E43001BBC8D /* ViewStore.swift */; };
 		DCDE7ED5253DDD110028CE3B /* StatePublisher.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCDE7ED4253DDD110028CE3B /* StatePublisher.swift */; };
-		DCDE7EDE253DE2010028CE3B /* StoreProxy.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCDE7EDD253DE2010028CE3B /* StoreProxy.swift */; };
+		DCDE7EDE253DE2010028CE3B /* AnyStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCDE7EDD253DE2010028CE3B /* AnyStore.swift */; };
 		DCDE7EE2253DE2A60028CE3B /* WithViewStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCDE7EE1253DE2A60028CE3B /* WithViewStore.swift */; };
 		DCDE7EE9253DE37E0028CE3B /* ActivityIndicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCDE7EE8253DE37E0028CE3B /* ActivityIndicator.swift */; };
 /* End PBXBuildFile section */
@@ -77,7 +77,7 @@
 		9375D76F252DEFD100AF9D24 /* InMemoryTaskService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InMemoryTaskService.swift; sourceTree = "<group>"; };
 		DC553D4B25345E43001BBC8D /* ViewStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewStore.swift; sourceTree = "<group>"; };
 		DCDE7ED4253DDD110028CE3B /* StatePublisher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatePublisher.swift; sourceTree = "<group>"; };
-		DCDE7EDD253DE2010028CE3B /* StoreProxy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreProxy.swift; sourceTree = "<group>"; };
+		DCDE7EDD253DE2010028CE3B /* AnyStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnyStore.swift; sourceTree = "<group>"; };
 		DCDE7EE1253DE2A60028CE3B /* WithViewStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WithViewStore.swift; sourceTree = "<group>"; };
 		DCDE7EE8253DE37E0028CE3B /* ActivityIndicator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityIndicator.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -184,7 +184,7 @@
 		DCDE7ED8253DDD330028CE3B /* MVI */ = {
 			isa = PBXGroup;
 			children = (
-				DCDE7EDD253DE2010028CE3B /* StoreProxy.swift */,
+				DCDE7EDD253DE2010028CE3B /* AnyStore.swift */,
 				DCDE7ED4253DDD110028CE3B /* StatePublisher.swift */,
 				DC553D4B25345E43001BBC8D /* ViewStore.swift */,
 				DCDE7EE1253DE2A60028CE3B /* WithViewStore.swift */,
@@ -357,7 +357,7 @@
 				DCDE7ED5253DDD110028CE3B /* StatePublisher.swift in Sources */,
 				DCDE7EE2253DE2A60028CE3B /* WithViewStore.swift in Sources */,
 				93161975252F1A6E006AB3DB /* Koin.swift in Sources */,
-				DCDE7EDE253DE2010028CE3B /* StoreProxy.swift in Sources */,
+				DCDE7EDE253DE2010028CE3B /* AnyStore.swift in Sources */,
 				7555FF81242A565900829871 /* SceneDelegate.swift in Sources */,
 				DCDE7EE9253DE37E0028CE3B /* ActivityIndicator.swift in Sources */,
 				DC553D4C25345E43001BBC8D /* ViewStore.swift in Sources */,

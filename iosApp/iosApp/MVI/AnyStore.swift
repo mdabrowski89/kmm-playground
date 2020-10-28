@@ -4,7 +4,7 @@ typealias Dispatcher<State, Action> = (@escaping (State) -> Action?) -> Void
 
 typealias StateObserver<State> = (@escaping (State?) -> Void) -> Void
 
-struct StoreProxy<Action, State> {
+struct AnyStore<Action, State> {
 
     let defaultState: () -> State
 
@@ -27,22 +27,21 @@ struct StoreProxy<Action, State> {
     }
 }
 
-extension StoreProxy {
+extension AnyStore {
 
-    init<Result>(
-        _ mviController: MviController<Action, Result, State>,
-        dispose: @escaping () -> Void
-    ) {
-        self.init(
+    static func viewModel<Result>(_ viewModel: ViewModel<Action, Result, State>) -> Self {
+        let mviController = viewModel.mviController
+
+        return .init(
             defaultState: mviController.defaultViewState,
             stateObserver: mviController.viewStatesFlow.watch,
             dispatch: mviController.accept,
-            dispose: dispose
+            dispose: viewModel.close
         )
     }
 }
 
-extension StoreProxy {
+extension AnyStore {
 
     static func preview(state: State) -> Self {
         self.init(

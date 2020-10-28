@@ -4,13 +4,13 @@ import shared
 
 struct HomeView: View {
 
-    typealias Store = StoreProxy<HomeAction, HomeViewState>
+    typealias Store = AnyStore<HomeAction, HomeViewState>
 
     private let store: Store
 
     @State private var text: String = ""
 
-    init(store: Store = koin.store(HomeMviController.self)) {
+    init(store: Store = .viewModel(HomeViewModel())) {
         self.store = store
     }
 
