@@ -1,5 +1,6 @@
 package pl.mobite.playground.di
 
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.MainScope
 import org.koin.dsl.module
 import pl.mobite.playground.common.mvi.MviController
@@ -28,6 +29,6 @@ actual val homePlatformModule = module {
             homeActionProcessing = get(),
             homeResultProcessing = get(),
             coroutineScope = MainScope()
-        ) as MviController<HomeAction, HomeResult, HomeViewState>
+        )
     }
 }

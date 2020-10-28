@@ -3,11 +3,9 @@ import Combine
 struct StatePublisher<Output>: Publisher {
     typealias Failure = Never
 
-    typealias Observer = (@escaping (Output?) -> Void) -> () -> Void
+    private let observer: StateObserver<Output>
 
-    private let observer: Observer
-
-    init(_ observer: @escaping Observer) {
+    init(_ observer: @escaping StateObserver<Output>) {
         self.observer = observer
     }
 
@@ -21,13 +19,10 @@ private extension StatePublisher {
 
   final class Subscription<Downstream: Subscriber> where Downstream.Input == Output {
         private var downstream: Downstream?
-        private let cancelObserver: () -> Void
 
-        init(observer: @escaping Observer, downstream: Downstream) {
+        init(observer: @escaping StateObserver<Downstream.Input>, downstream: Downstream) {
             self.downstream = downstream
-            self.cancelObserver = observer {
-                _ = $0.map(downstream.receive)
-            }
+            observer { _ = $0.map(downstream.receive) }
         }
     }
 }
@@ -42,7 +37,6 @@ extension StatePublisher.Subscription: Subscription {
 extension StatePublisher.Subscription: Cancellable {
 
     func cancel() {
-        cancelObserver()
         downstream = nil
     }
 }

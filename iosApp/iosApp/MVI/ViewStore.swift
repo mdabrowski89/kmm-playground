@@ -3,9 +3,7 @@ import Combine
 import shared
 
 @dynamicMemberLookup
-final class ViewStore<Action, Result, State>: ObservableObject
-    where Action: AnyObject, Result: AnyObject, State: AnyObject
-{
+final class ViewStore<Action, State>: ObservableObject {
 
     private(set) var state: State {
         willSet {
@@ -13,22 +11,26 @@ final class ViewStore<Action, Result, State>: ObservableObject
         }
     }
 
-    private let acceptAction: (@escaping (State) -> Action?) -> Void
+    private let dispatch: Dispatcher<State, Action>
 
-    private let acceptResult: (Result) -> Void
+    private let dispose: () -> Void
 
     private var viewCancellable: AnyCancellable?
 
     init(
-        store: Store<Action, Result, State>,
+        store: StoreProxy<Action, State>,
         removeDupicates isDuplicate: @escaping (State, State) -> Bool
     ) {
-        self.state = store.defaultViewState()
-        self.acceptAction = store.accept
-        self.acceptResult = store.accept
-        self.viewCancellable = StatePublisher(store.viewStatesFlow.watch)
+        self.state = store.defaultState()
+        self.dispatch = store.dispatch
+        self.dispose = store.dispose
+        self.viewCancellable = StatePublisher(store.stateObserver)
             .removeDuplicates(by: isDuplicate)
             .sink { [weak self] in self?.state = $0 }
+    }
+
+    deinit {
+        dispose()
     }
 
     subscript<LocalState>(dynamicMember keyPath: KeyPath<State, LocalState>) -> LocalState {
@@ -36,29 +38,13 @@ final class ViewStore<Action, Result, State>: ObservableObject
     }
 
     func accept(_ intent: @escaping (State) -> Action?) {
-        acceptAction(intent)
-    }
-
-    func accept(_ result: Result) {
-        acceptResult(result)
-    }
-
-    func binding<LocalState>(
-        get: @escaping (State) -> LocalState,
-        send result: Result
-    ) -> Binding<LocalState> {
-        return .init(
-            get: { get(self.state) },
-            set: { _ in
-                self.accept(result)
-            }
-        )
+        dispatch(intent)
     }
 }
 
 extension ViewStore where State: Equatable {
 
-    convenience init(store: Store<Action, Result, State>) {
+    convenience init(store: StoreProxy<Action, State>) {
         self.init(
             store: store,
             removeDupicates: ==

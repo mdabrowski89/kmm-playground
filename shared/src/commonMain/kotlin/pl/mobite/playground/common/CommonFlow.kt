@@ -18,13 +18,9 @@ class CommonFlow<T>(
     private val origin: Flow<T>
 ) : Flow<T> by origin {
 
-    fun watch(block: (T) -> Unit): () -> Unit {
+    fun watch(block: (T) -> Unit) {
         onEach {
             block(it)
         }.launchIn(coroutineScope)
-
-        return {
-            coroutineScope.cancel()
-        }
     }
 }
