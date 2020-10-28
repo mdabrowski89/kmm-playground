@@ -10,7 +10,7 @@ struct HomeView: View {
 
     @State private var text: String = ""
 
-    init(store: Store = koin.store(HomeMviController.self)) {
+    init(store: Store = .init(viewModel: HomeViewModel())) {
         self.store = store
     }
 

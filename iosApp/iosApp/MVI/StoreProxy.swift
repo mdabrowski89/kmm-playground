@@ -30,7 +30,7 @@ struct StoreProxy<Action, State> {
 extension StoreProxy {
 
     init<Result>(
-        _ mviController: MviController<Action, Result, State>,
+        mviController: MviController<Action, Result, State>,
         dispose: @escaping () -> Void
     ) {
         self.init(
@@ -38,6 +38,16 @@ extension StoreProxy {
             stateObserver: mviController.viewStatesFlow.watch,
             dispatch: mviController.accept,
             dispose: dispose
+        )
+    }
+}
+
+extension StoreProxy {
+
+    init<Result>(viewModel: ViewModel<Action, Result, State>) {
+        self.init(
+            mviController: viewModel.mviController,
+            dispose: viewModel.close
         )
     }
 }
