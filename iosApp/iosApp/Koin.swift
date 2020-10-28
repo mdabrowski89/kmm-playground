@@ -27,4 +27,8 @@ extension Koin_coreKoin {
     func get<T: AnyObject>(_ type: T.Type = T.self) -> T {
         return get(objCClass: T.self) as! T
     }
+
+    func get<T: AnyObject>(_ type: T.Type = T.self, parameter: Any) -> T {
+        return get(objCClass: T.self, parameter: parameter) as! T
+    }
 }

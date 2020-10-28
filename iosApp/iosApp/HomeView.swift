@@ -2,15 +2,15 @@ import SwiftUI
 import Combine
 import shared
 
-typealias HomeStore = MviController<HomeAction, HomeResult, HomeViewState>
-
 struct HomeView: View {
 
-    private let store: HomeStore
+    typealias Store = AnyStore<HomeAction, HomeViewState>
+
+    private let store: Store
 
     @State private var text: String = ""
 
-    init(store: HomeStore = koin.get()) {
+    init(store: Store = .viewModel(HomeViewModel())) {
         self.store = store
     }
 
@@ -52,21 +52,30 @@ struct HomeView: View {
             .onAppear {
                 viewStore.accept { $0.loadDataIfNeeded() }
             }
-            .alert(
-                isPresented: viewStore.binding(
-                    get: { $0.error != nil },
-                    send: HomeResult.EventConsumption.EventConsumptionErrorConsumed()
-                ),
-                content: {
-                    viewStore.error.map { Alert(title: Text($0.message ?? "")) } ?? Alert(title: Text(""))
-                }
-            )
         }
     }
 }
 
-//struct ContentView_Previews: PreviewProvider {
-//    static var previews: some View {
-//        ContentView()
-//    }
-//}
+#if DEBUG
+extension HomeViewState {
+
+    static func preview() -> HomeViewState {
+        .init(
+            inProgress: true,
+            tasks: nil,
+            newTaskAdded: nil,
+            error: nil
+        )
+    }
+}
+
+struct HomeView_Previews: PreviewProvider {
+
+    static var previews: some View {
+        NavigationView {
+            HomeView(store: .preview(state: .preview()))
+        }
+        .navigationViewStyle(StackNavigationViewStyle())
+    }
+}
+#endif
