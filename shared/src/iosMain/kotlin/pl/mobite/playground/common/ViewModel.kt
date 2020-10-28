@@ -7,9 +7,9 @@ import pl.mobite.playground.common.mvi.api.MviAction
 import pl.mobite.playground.common.mvi.api.MviResult
 import pl.mobite.playground.common.mvi.api.MviViewState
 
-abstract class ViewModel<A: MviAction, R: MviResult, VS: MviViewState>(
+abstract class ViewModel(
     internal val viewModelScope: CoroutineScope
 ): KoinComponent {
-    abstract val mviController: MviController<A, R, VS>
+    abstract val mviController: MviController<*, *, *>
     fun close() = viewModelScope.cancel()
 }

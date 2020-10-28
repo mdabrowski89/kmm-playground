@@ -6,6 +6,6 @@ import org.koin.core.parameter.parametersOf
 import pl.mobite.playground.common.ViewModel
 import pl.mobite.playground.domain.home.mvi.HomeMviController
 
-class HomeViewModel: ViewModel<HomeAction, HomeResult, HomeViewState>(MainScope()) {
+class HomeViewModel: ViewModel(MainScope()) {
     override val mviController: HomeMviController by inject { parametersOf(viewModelScope) }
 }
