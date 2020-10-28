@@ -9,7 +9,7 @@ struct WithViewStore<Action, State, Content>: View where Content: View {
     @ObservedObject private var viewStore: _ViewStore
 
     init(
-        _ store: StoreProxy<Action, State>,
+        _ store: AnyStore<Action, State>,
         removeDupicates isDuplicate: @escaping (State, State) -> Bool,
         @ViewBuilder content: @escaping (_ViewStore) -> Content
     ) {
@@ -29,7 +29,7 @@ struct WithViewStore<Action, State, Content>: View where Content: View {
 extension WithViewStore where State: Equatable {
 
     init(
-        _ store: StoreProxy<Action, State>,
+        _ store: AnyStore<Action, State>,
         @ViewBuilder content: @escaping (_ViewStore) -> Content
     ) {
         self.init(

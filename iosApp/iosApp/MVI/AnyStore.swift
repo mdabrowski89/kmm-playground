@@ -4,7 +4,7 @@ typealias Dispatcher<State, Action> = (@escaping (State) -> Action?) -> Void
 
 typealias StateObserver<State> = (@escaping (State?) -> Void) -> Void
 
-struct StoreProxy<Action, State> {
+struct AnyStore<Action, State> {
 
     let defaultState: () -> State
 
@@ -27,7 +27,7 @@ struct StoreProxy<Action, State> {
     }
 }
 
-extension StoreProxy {
+extension AnyStore {
 
     static func viewModel<Result>(_ viewModel: ViewModel<Action, Result, State>) -> Self {
         let mviController = viewModel.mviController
@@ -41,7 +41,7 @@ extension StoreProxy {
     }
 }
 
-extension StoreProxy {
+extension AnyStore {
 
     static func preview(state: State) -> Self {
         self.init(

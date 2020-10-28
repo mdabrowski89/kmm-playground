@@ -4,7 +4,7 @@ import shared
 
 struct HomeView: View {
 
-    typealias Store = StoreProxy<HomeAction, HomeViewState>
+    typealias Store = AnyStore<HomeAction, HomeViewState>
 
     private let store: Store
 
