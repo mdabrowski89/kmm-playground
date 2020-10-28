@@ -10,7 +10,7 @@ struct HomeView: View {
 
     @State private var text: String = ""
 
-    init(store: Store = .init(viewModel: HomeViewModel())) {
+    init(store: Store = .viewModel(HomeViewModel())) {
         self.store = store
     }
 

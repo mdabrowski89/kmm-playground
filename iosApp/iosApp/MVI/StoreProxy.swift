@@ -29,24 +29,13 @@ struct StoreProxy<Action, State> {
 
 extension StoreProxy {
 
-    init<Result>(
-        mviController: MviController<Action, Result, State>,
-        dispose: @escaping () -> Void
-    ) {
-        self.init(
+    static func viewModel<Result>(_ viewModel: ViewModel<Action, Result, State>) -> Self {
+        let mviController = viewModel.mviController
+
+        return .init(
             defaultState: mviController.defaultViewState,
             stateObserver: mviController.viewStatesFlow.watch,
             dispatch: mviController.accept,
-            dispose: dispose
-        )
-    }
-}
-
-extension StoreProxy {
-
-    init<Result>(viewModel: ViewModel<Action, Result, State>) {
-        self.init(
-            mviController: viewModel.mviController,
             dispose: viewModel.close
         )
     }
