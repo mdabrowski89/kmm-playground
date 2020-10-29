@@ -59,6 +59,12 @@ final class ViewStore<Action, State>: ObservableObject {
             }
         )
     }
+
+    func binding<Value>(
+        for keyPath: KeyPath<State, MviEventRaw<Value>?>
+    ) -> EventBinding<Value> {
+        binding(for: keyPath, id: keyPath)
+    }
 }
 
 extension ViewStore where State: Equatable {
