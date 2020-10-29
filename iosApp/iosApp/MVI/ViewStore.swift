@@ -17,6 +17,8 @@ final class ViewStore<Action, State>: ObservableObject {
 
     private var viewCancellable: AnyCancellable?
 
+    private var bindings: [AnyHashable: String] = [:]
+
     init(
         store: AnyStore<Action, State>,
         removeDupicates isDuplicate: @escaping (State, State) -> Bool
@@ -40,6 +42,25 @@ final class ViewStore<Action, State>: ObservableObject {
     func accept(_ intent: @escaping (State) -> Action?) {
         dispatch(intent)
     }
+
+    func binding<Value>(
+        for keyPath: KeyPath<State, MviEventRaw<Value>?>,
+        id: AnyHashable
+    ) -> Binding<MviEventRaw<Value>?> {
+        guard let event = state[keyPath: keyPath] else {
+            return .constant(nil)
+        }
+
+        return .init(
+            get: {
+                return self.bindings[id] == event.id ? nil : event
+            },
+            set: {
+                guard $0 == nil else { return }
+                self.bindings[id] = event.id
+            }
+        )
+    }
 }
 
 extension ViewStore where State: Equatable {
@@ -49,5 +70,18 @@ extension ViewStore where State: Equatable {
             store: store,
             removeDupicates: ==
         )
+    }
+}
+
+extension MviEventRaw: Identifiable {
+    // no-op
+}
+
+extension View {
+
+    func alert<Value>(event: Binding<MviEventRaw<Value>?>, content: (Value) -> Alert) -> some View {
+        alert(item: event) { event in
+            event.value.map(content) ?? Alert(title: Text(""))
+        }
     }
 }

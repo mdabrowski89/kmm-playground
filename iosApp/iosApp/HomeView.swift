@@ -10,6 +10,8 @@ struct HomeView: View {
 
     @State private var text: String = ""
 
+    struct ErrorEventID: Hashable {}
+
     init(store: Store = .viewModel(HomeViewModel())) {
         self.store = store
     }
@@ -52,6 +54,9 @@ struct HomeView: View {
             .onAppear {
                 viewStore.accept { $0.loadDataIfNeeded() }
             }
+            .alert(event: viewStore.binding(for: \.errorEvent, id: ErrorEventID())) { error in
+                Alert(title: Text(error.message ?? ""))
+            }
         }
     }
 }
@@ -63,8 +68,8 @@ extension HomeViewState {
         .init(
             inProgress: true,
             tasks: nil,
-            newTaskAdded: nil,
-            error: nil
+            taskAddedEvent: nil,
+            errorEvent: nil
         )
     }
 }
