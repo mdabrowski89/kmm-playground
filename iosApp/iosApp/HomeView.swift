@@ -2,16 +2,20 @@ import SwiftUI
 import Combine
 import shared
 
-typealias StoreFactory<Store> = (CoroutineScopeType) -> Store
+struct HomeView: View {
 
-struct ContentView: View {
+    typealias Store = AnyStore<HomeAction, HomeViewState>
 
-    let storeFactory: StoreFactory<HomeMviController> = koin.store()
+    private let store: Store
 
-    @State var text: String = ""
+    @State private var text: String = ""
+
+    init(store: Store = .viewModel(HomeViewModel())) {
+        self.store = store
+    }
 
     var body: some View {
-        WithViewStore(storeFactory) { viewStore in
+        WithViewStore(store) { viewStore in
             ZStack {
                 VStack {
                     HStack {
@@ -30,7 +34,7 @@ struct ContentView: View {
                     Divider()
                     List(viewStore.tasks ?? []) { task in
                         Button {
-                            viewStore.accept { $0.updateTask(taskId: 0, isDone: !task.isDone) }
+                            viewStore.accept { $0.updateTask(taskId: task.id, isDone: !task.isDone) }
                         } label: {
                             HStack {
                                 Text("\(task.content)")
@@ -48,37 +52,30 @@ struct ContentView: View {
             .onAppear {
                 viewStore.accept { $0.loadDataIfNeeded() }
             }
-            .alert(
-                isPresented: viewStore.binding(
-                    get: { $0.error != nil },
-                    send: HomeResult.EventConsumption.EventConsumptionErrorConsumed()
-                ),
-                content: {
-                    viewStore.error.map { Alert(title: Text($0.message ?? "")) } ?? Alert(title: Text(""))
-                }
-            )
         }
     }
 }
 
-extension Task: Identifiable {
-    // no-op
+#if DEBUG
+extension HomeViewState {
+
+    static func preview() -> HomeViewState {
+        .init(
+            inProgress: true,
+            tasks: nil,
+            newTaskAdded: nil,
+            error: nil
+        )
+    }
 }
 
-struct ActivityIndicator: UIViewRepresentable {
+struct HomeView_Previews: PreviewProvider {
 
-    func makeUIView(context: Context) -> UIActivityIndicatorView {
-        UIActivityIndicatorView()
+    static var previews: some View {
+        NavigationView {
+            HomeView(store: .preview(state: .preview()))
+        }
+        .navigationViewStyle(StackNavigationViewStyle())
     }
-    
-    func updateUIView(_ uiView: UIActivityIndicatorView, context: Context) {
-        uiView.startAnimating()
-    }
-    
 }
-
-//struct ContentView_Previews: PreviewProvider {
-//    static var previews: some View {
-//        ContentView()
-//    }
-//}
+#endif
