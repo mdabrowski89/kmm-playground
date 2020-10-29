@@ -52,9 +52,7 @@ final class ViewStore<Action, State>: ObservableObject {
         }
 
         return .init(
-            get: {
-                return self.bindings[id] == event.id ? nil : event
-            },
+            get: { self.bindings[id] == event.id ? nil : event },
             set: {
                 guard $0 == nil else { return }
                 self.bindings[id] = event.id
