@@ -46,7 +46,7 @@ final class ViewStore<Action, State>: ObservableObject {
     func binding<Value>(
         for keyPath: KeyPath<State, MviEventRaw<Value>?>,
         id: AnyHashable
-    ) -> Binding<MviEventRaw<Value>?> {
+    ) -> EventBinding<Value> {
         guard let event = state[keyPath: keyPath] else {
             return .constant(nil)
         }
@@ -71,13 +71,15 @@ extension ViewStore where State: Equatable {
     }
 }
 
+typealias EventBinding<Value> = Binding<MviEventRaw<Value>?> where Value: AnyObject
+
 extension MviEventRaw: Identifiable {
     // no-op
 }
 
 extension View {
 
-    func alert<Value>(event: Binding<MviEventRaw<Value>?>, content: (Value) -> Alert) -> some View {
+    func alert<Value>(event: EventBinding<Value>, content: (Value) -> Alert) -> some View {
         alert(item: event) { event in
             event.value.map(content) ?? Alert(title: Text(""))
         }
