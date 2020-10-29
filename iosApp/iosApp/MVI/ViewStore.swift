@@ -21,7 +21,7 @@ final class ViewStore<Action, State>: ObservableObject {
 
     init(
         store: AnyStore<Action, State>,
-        removeDupicates isDuplicate: @escaping (State, State) -> Bool
+        removeDuplicates isDuplicate: @escaping (State, State) -> Bool
     ) {
         self.state = store.defaultState()
         self.dispatch = store.dispatch
@@ -66,7 +66,7 @@ extension ViewStore where State: Equatable {
     convenience init(store: AnyStore<Action, State>) {
         self.init(
             store: store,
-            removeDupicates: ==
+            removeDuplicates: ==
         )
     }
 }
