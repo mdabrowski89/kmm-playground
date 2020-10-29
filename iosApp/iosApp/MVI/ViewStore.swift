@@ -134,10 +134,8 @@ extension View {
         _ event: MviEventRaw<Value>?,
         perform action: @escaping (Value) -> Void
     ) -> some View {
-        onChange(of: event) { event in
-            if let event = event, let value = event.value {
-                action(value)
-            }
+        onChange(of: event) {
+            $0.flatMap(\.value).map(action)
         }
     }
 }
