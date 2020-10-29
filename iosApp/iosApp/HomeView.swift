@@ -52,6 +52,12 @@ struct HomeView: View {
             .onAppear {
                 viewStore.accept { $0.loadDataIfNeeded() }
             }
+            .alert(event: viewStore.binding(for: \.errorEvent)) { error in
+                Alert(title: Text(error.message ?? ""))
+            }
+            .onEvent(viewStore.taskAddedEvent) { _ in
+                text.removeAll()
+            }
         }
     }
 }
@@ -63,8 +69,8 @@ extension HomeViewState {
         .init(
             inProgress: true,
             tasks: nil,
-            newTaskAdded: nil,
-            error: nil
+            taskAddedEvent: nil,
+            errorEvent: nil
         )
     }
 }
