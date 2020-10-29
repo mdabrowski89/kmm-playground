@@ -57,6 +57,9 @@ struct HomeView: View {
             .alert(event: viewStore.binding(for: \.errorEvent, id: ErrorEventID())) { error in
                 Alert(title: Text(error.message ?? ""))
             }
+            .onEvent(viewStore.taskAddedEvent) { _ in
+                text.removeAll()
+            }
         }
     }
 }
