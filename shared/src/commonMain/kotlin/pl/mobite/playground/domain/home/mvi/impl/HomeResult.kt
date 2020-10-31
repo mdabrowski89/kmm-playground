@@ -19,11 +19,4 @@ sealed class HomeResult : MviResult {
     data class UpdateTaskResult(val updatedTask: Task) : HomeResult()
 
     data class DeleteCompletedTasksResult(val deletedTasks: List<Task>) : HomeResult()
-
-    sealed class EventConsumption: HomeResult() {
-
-        object ErrorConsumed : EventConsumption()
-
-        object NewTaskAddedConsumed : EventConsumption()
-    }
 }

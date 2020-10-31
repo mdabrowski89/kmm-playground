@@ -10,12 +10,12 @@ struct WithViewStore<Action, State, Content>: View where Content: View {
 
     init(
         _ store: AnyStore<Action, State>,
-        removeDupicates isDuplicate: @escaping (State, State) -> Bool,
+        removeDuplicates isDuplicate: @escaping (State, State) -> Bool,
         @ViewBuilder content: @escaping (_ViewStore) -> Content
     ) {
         self.viewStore = .init(
             store: store,
-            removeDupicates: isDuplicate
+            removeDuplicates: isDuplicate
         )
 
         self.content = content
@@ -34,7 +34,7 @@ extension WithViewStore where State: Equatable {
     ) {
         self.init(
             store,
-            removeDupicates: ==,
+            removeDuplicates: ==,
             content: content
         )
     }

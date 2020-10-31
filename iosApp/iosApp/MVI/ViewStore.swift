@@ -17,9 +17,11 @@ final class ViewStore<Action, State>: ObservableObject {
 
     private var viewCancellable: AnyCancellable?
 
+    private var bindings: [AnyHashable: String] = [:]
+
     init(
         store: AnyStore<Action, State>,
-        removeDupicates isDuplicate: @escaping (State, State) -> Bool
+        removeDuplicates isDuplicate: @escaping (State, State) -> Bool
     ) {
         self.state = store.defaultState()
         self.dispatch = store.dispatch
@@ -40,6 +42,44 @@ final class ViewStore<Action, State>: ObservableObject {
     func accept(_ intent: @escaping (State) -> Action?) {
         dispatch(intent)
     }
+
+    func binding<Value>(
+        for keyPath: KeyPath<State, MviEvent<Value>?>,
+        id: AnyHashable,
+        _ file: StaticString = #file,
+        _ line: UInt = #line
+    ) -> EventBinding<Value> {
+        let binding = state[keyPath: keyPath].map { event -> EventBinding<Value> in
+            .init(
+                get: { [unowned self] in
+                    self.bindings[id] == event.id ? nil : event
+                },
+                set: { [unowned self] in
+                    guard $0 == nil else { return }
+                    guard self.bindings[id] != event.id else {
+                        assertionFailure(
+                            "Event with id \(event.id) is already consumed",
+                            file: file,
+                            line: line
+                        )
+                        return
+                    }
+
+                    self.bindings[id] = event.id
+                }
+            )
+        }
+
+        return binding ?? .constant(nil)
+    }
+
+    func binding<Value>(
+        for keyPath: KeyPath<State, MviEvent<Value>?>,
+        _ file: StaticString = #file,
+        _ line: UInt = #line
+    ) -> EventBinding<Value> {
+        binding(for: keyPath, id: keyPath, file, line)
+    }
 }
 
 extension ViewStore where State: Equatable {
@@ -47,7 +87,7 @@ extension ViewStore where State: Equatable {
     convenience init(store: AnyStore<Action, State>) {
         self.init(
             store: store,
-            removeDupicates: ==
+            removeDuplicates: ==
         )
     }
 }

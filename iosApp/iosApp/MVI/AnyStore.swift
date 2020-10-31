@@ -29,7 +29,7 @@ struct AnyStore<Action, State> {
 
 extension AnyStore {
 
-    static func viewModel<Result>(_ viewModel: ViewModel<Action, Result, State>) -> Self {
+    static func store<Result>(from viewModel: ViewModel<Action, Result, State>) -> Self {
         let mviController = viewModel.mviController
 
         return .init(
