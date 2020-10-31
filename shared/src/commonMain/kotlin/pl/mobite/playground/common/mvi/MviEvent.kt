@@ -10,7 +10,7 @@ abstract class MviEvent<T> : Parcelable {
     abstract val id: String
 
     /**
-     * Static creator methods are ued in order to hide implementation details of each MviEvent type
+     * Static creator methods are used in order to hide implementation details of each MviEvent type
      */
     companion object {
 
