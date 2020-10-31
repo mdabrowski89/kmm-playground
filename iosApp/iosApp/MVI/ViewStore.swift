@@ -51,15 +51,14 @@ final class ViewStore<Action, State>: ObservableObject {
     ) -> EventBinding<Value> {
         let binding = state[keyPath: keyPath].map { event -> EventBinding<Value> in
             .init(
-                get: { [weak self] in
-                    guard let self = self else { return nil }
-                    return self.bindings[id] == event.id ? nil : event
+                get: { [unowned self] in
+                    self.bindings[id] == event.id ? nil : event
                 },
-                set: { [weak self] in
-                    guard let self = self, $0 == nil else { return }
+                set: { [unowned self] in
+                    guard $0 == nil else { return }
                     guard self.bindings[id] != event.id else {
                         assertionFailure(
-                            "Binding with id \(id) is already consumed",
+                            "Event with id \(event.id) is already consumed",
                             file: file,
                             line: line
                         )
