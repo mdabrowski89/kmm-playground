@@ -5,7 +5,7 @@ import pl.mobite.playground.common.Parcelize
 import pl.mobite.playground.common.RawValue
 import pl.mobite.playground.common.randomUUID
 
-abstract class MviEvent<T>() : Parcelable {
+abstract class MviEvent<T> : Parcelable {
     abstract val value: T
     abstract val id: String
 
