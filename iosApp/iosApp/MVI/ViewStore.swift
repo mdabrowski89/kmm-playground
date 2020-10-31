@@ -45,13 +45,24 @@ final class ViewStore<Action, State>: ObservableObject {
 
     func binding<Value>(
         for keyPath: KeyPath<State, MviEvent<Value>?>,
-        id: AnyHashable
+        id: AnyHashable,
+        _ file: StaticString = #file,
+        _ line: UInt = #line
     ) -> EventBinding<Value> {
         let binding = state[keyPath: keyPath].map { event in
             Binding(
                 get: { self.bindings[id] == event.id ? nil : event },
                 set: {
                     guard $0 == nil else { return }
+                    guard self.bindings[id] != event.id else {
+                        assertionFailure(
+                            "Binding with id \(id) is already consumed",
+                            file: file,
+                            line: line
+                        )
+                        return
+                    }
+
                     self.bindings[id] = event.id
                 }
             )
@@ -61,9 +72,11 @@ final class ViewStore<Action, State>: ObservableObject {
     }
 
     func binding<Value>(
-        for keyPath: KeyPath<State, MviEvent<Value>?>
+        for keyPath: KeyPath<State, MviEvent<Value>?>,
+        _ file: StaticString = #file,
+        _ line: UInt = #line
     ) -> EventBinding<Value> {
-        binding(for: keyPath, id: keyPath)
+        binding(for: keyPath, id: keyPath, file, line)
     }
 }
 
