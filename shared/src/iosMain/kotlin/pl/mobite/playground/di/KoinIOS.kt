@@ -13,7 +13,7 @@ fun doInitKoin(taskService: Definition<TaskService>) = doInitKoin(
     appDeclaration = {
         modules(
             module {
-                factory(definition = taskService)
+                single(definition = taskService)
             }
         )
     }
