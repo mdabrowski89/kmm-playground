@@ -14,8 +14,8 @@ import pl.mobite.playground.common.mvi.api.MviResult
 
 /**
  * Parallel Flow Builder
- * add description
- * */
+ * TODO: add description
+ */
 @Suppress("EXPERIMENTAL_API_USAGE")
 internal class ProcessingFlow<A : MviAction, R : MviResult>(
     channel: ReceiveChannel<A>,

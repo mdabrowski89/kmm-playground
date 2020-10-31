@@ -10,12 +10,12 @@ abstract class BaseFragment(contentLayoutId: Int = 0) : Fragment(contentLayoutId
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        mviEventsCache.loadEvents(savedInstanceState)
+        mviEventsCache.loadFromBundle(savedInstanceState)
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        mviEventsCache.saveEvents(outState)
+        mviEventsCache.saveInBundle(outState)
     }
 
     protected fun <T> MviEvent<T>.consume(action: (T) -> Unit) = mviEventsCache.consumeEvent(this, action)

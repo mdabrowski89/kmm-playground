@@ -8,9 +8,6 @@ fun doInitKoin(appDeclaration: KoinAppDeclaration = {}) = startKoin {
     appDeclaration()
     modules(
         homeModule,
-        homePlatformModule,
         taskUseCaseModule
     )
 }
-
-expect val homePlatformModule: Module

@@ -5,12 +5,16 @@ import pl.mobite.playground.common.Parcelize
 import pl.mobite.playground.common.RawValue
 import pl.mobite.playground.common.randomUUID
 
+/**
+ * Representation of an event in [MviViewState]
+ * TODO: add doc
+ */
 abstract class MviEvent<T> : Parcelable {
     abstract val value: T
     abstract val id: String
 
     /**
-     * Static creator methods are used in order to hide implementation details of each MviEvent type
+     * Static creator methods are used in order to hide implementation details of each [MviEvent] type
      */
     companion object {
 

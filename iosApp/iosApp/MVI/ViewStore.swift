@@ -23,7 +23,7 @@ final class ViewStore<Action, State>: ObservableObject {
         store: AnyStore<Action, State>,
         removeDuplicates isDuplicate: @escaping (State, State) -> Bool
     ) {
-        self.state = store.defaultState()
+        self.state = store.defaultState
         self.dispatch = store.dispatch
         self.dispose = store.dispose
         self.viewCancellable = StatePublisher(store.stateObserver)

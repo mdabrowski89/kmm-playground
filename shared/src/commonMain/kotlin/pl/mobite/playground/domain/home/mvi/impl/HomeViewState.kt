@@ -14,13 +14,11 @@ import pl.mobite.playground.model.Task
  */
 @Parcelize
 data class HomeViewState(
-    val inProgress: Boolean,
-    val tasks: List<Task>?,
-    val taskAddedEvent: MviEvent<Boolean>?,
-    val errorEvent: MviEvent<Throwable>?,
+    val inProgress: Boolean = false,
+    val tasks: List<Task>? = null,
+    val taskAddedEvent: MviEvent<Boolean>? = null,
+    val errorEvent: MviEvent<Throwable>? = null,
 ) : MviViewState {
-
-    override fun isSavable(): Boolean = !inProgress
 
     fun loadDataIfNeeded(): HomeAction? {
         return if (tasks == null) LoadTasksAction else null

@@ -4,11 +4,10 @@ import androidx.lifecycle.SavedStateHandle
 import kotlinx.coroutines.CoroutineScope
 import org.koin.core.parameter.parametersOf
 import org.koin.dsl.module
+import pl.mobite.playground.domain.home.HomeViewStateCache
 import pl.mobite.playground.domain.home.mvi.HomeMviController
-import pl.mobite.playground.domain.home.mvi.HomeResultProcessing
-import pl.mobite.playground.domain.home.mvi.impl.HomeViewStateCache
 
-actual val homePlatformModule = module {
+val homePlatformModule = module {
 
     factory { (savedStateHandle: SavedStateHandle) ->
         HomeViewStateCache(
@@ -16,18 +15,15 @@ actual val homePlatformModule = module {
         )
     }
 
-    factory { (savedStateHandle: SavedStateHandle) ->
-        HomeResultProcessing(
-            homeResultReducer = get(),
-            homeViewStateCache = get { parametersOf(savedStateHandle) }
-        )
-    }
-
-    factory { (savedStateHandle: SavedStateHandle, coroutineScope: CoroutineScope) ->
+    factory(override = true) { (savedStateHandle: SavedStateHandle, coroutineScope: CoroutineScope) ->
+        val homeViewStateCache: HomeViewStateCache = get { parametersOf(savedStateHandle) }
         HomeMviController(
-            homeActionProcessing = get(),
-            homeResultProcessing = get { parametersOf(savedStateHandle) },
+            actionProcessor = get(),
+            initialViewState = homeViewStateCache.get() ?: get(),
+            resultReducer = get(),
             coroutineScope = coroutineScope
-        )
+        ).apply {
+            homeViewStateCache.useWith(this)
+        }
     }
 }
