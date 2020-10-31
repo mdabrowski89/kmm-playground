@@ -10,8 +10,6 @@ struct HomeView: View {
 
     @State private var text: String = ""
 
-    private struct ErrorBindingID: Hashable {}
-
     init(store: Store = .store(from: HomeViewModel())) {
         self.store = store
     }
@@ -55,10 +53,7 @@ struct HomeView: View {
                 viewStore.accept { $0.loadDataIfNeeded() }
             }
             .alert(
-                event: viewStore.binding(
-                    for: \.errorEvent,
-                    id: ErrorBindingID()
-                ),
+                event: viewStore.binding(for: \.errorEvent),
                 content: { error in
                     Alert(title: Text(error.message ?? ""))
                 }

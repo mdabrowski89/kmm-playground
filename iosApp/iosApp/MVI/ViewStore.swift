@@ -44,10 +44,10 @@ final class ViewStore<Action, State>: ObservableObject {
     }
 
     func binding<Value>(
-        for toEvent: (State) -> MviEvent<Value>?,
+        for keyPath: KeyPath<State, MviEvent<Value>?>,
         id: AnyHashable
     ) -> EventBinding<Value> {
-        let binding = toEvent(state).map { event in
+        let binding = state[keyPath: keyPath].map { event in
             Binding(
                 get: { self.bindings[id] == event.id ? nil : event },
                 set: {
@@ -58,6 +58,12 @@ final class ViewStore<Action, State>: ObservableObject {
         }
 
         return binding ?? .constant(nil)
+    }
+
+    func binding<Value>(
+        for keyPath: KeyPath<State, MviEvent<Value>?>
+    ) -> EventBinding<Value> {
+        binding(for: keyPath, id: keyPath)
     }
 }
 
