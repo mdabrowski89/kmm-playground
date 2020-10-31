@@ -44,26 +44,20 @@ final class ViewStore<Action, State>: ObservableObject {
     }
 
     func binding<Value>(
-        for keyPath: KeyPath<State, MviEvent<Value>?>,
+        for toEvent: (State) -> MviEvent<Value>?,
         id: AnyHashable
     ) -> EventBinding<Value> {
-        guard let event = state[keyPath: keyPath] else {
-            return .constant(nil)
+        let binding = toEvent(state).map { event in
+            Binding(
+                get: { self.bindings[id] == event.id ? nil : event },
+                set: {
+                    guard $0 == nil else { return }
+                    self.bindings[id] = event.id
+                }
+            )
         }
 
-        return .init(
-            get: { self.bindings[id] == event.id ? nil : event },
-            set: {
-                guard $0 == nil else { return }
-                self.bindings[id] = event.id
-            }
-        )
-    }
-
-    func binding<Value>(
-        for keyPath: KeyPath<State, MviEvent<Value>?>
-    ) -> EventBinding<Value> {
-        binding(for: keyPath, id: keyPath)
+        return binding ?? .constant(nil)
     }
 }
 

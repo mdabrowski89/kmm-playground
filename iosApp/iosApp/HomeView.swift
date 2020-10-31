@@ -10,7 +10,9 @@ struct HomeView: View {
 
     @State private var text: String = ""
 
-    init(store: Store = .viewModel(HomeViewModel())) {
+    private struct ErrorBindingID: Hashable {}
+
+    init(store: Store = .store(from: HomeViewModel())) {
         self.store = store
     }
 
@@ -52,9 +54,15 @@ struct HomeView: View {
             .onAppear {
                 viewStore.accept { $0.loadDataIfNeeded() }
             }
-            .alert(event: viewStore.binding(for: \.errorEvent)) { error in
-                Alert(title: Text(error.message ?? ""))
-            }
+            .alert(
+                event: viewStore.binding(
+                    for: \.errorEvent,
+                    id: ErrorBindingID()
+                ),
+                content: { error in
+                    Alert(title: Text(error.message ?? ""))
+                }
+            )
             .onEvent(viewStore.taskAddedEvent) { _ in
                 text.removeAll()
             }

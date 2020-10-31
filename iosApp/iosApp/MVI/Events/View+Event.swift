@@ -1,10 +1,10 @@
 import SwiftUI
-import class shared.MviEventRaw
+import class shared.MviEvent
 
 extension View {
 
     func onEvent<Value>(
-        _ event: MviEventRaw<Value>?,
+        _ event: MviEvent<Value>?,
         perform action: @escaping (Value) -> Void
     ) -> some View {
         onChange(of: event) {
