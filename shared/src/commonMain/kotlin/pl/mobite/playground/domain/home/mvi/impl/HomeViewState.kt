@@ -2,7 +2,6 @@ package pl.mobite.playground.domain.home.mvi.impl
 
 import pl.mobite.playground.common.Parcelize
 import pl.mobite.playground.common.mvi.MviEvent
-import pl.mobite.playground.common.mvi.MviEventRaw
 import pl.mobite.playground.common.mvi.api.MviViewState
 import pl.mobite.playground.domain.home.mvi.impl.HomeAction.AddTaskAction
 import pl.mobite.playground.domain.home.mvi.impl.HomeAction.DeleteCompletedTasksAction
@@ -17,8 +16,8 @@ import pl.mobite.playground.model.Task
 data class HomeViewState(
     val inProgress: Boolean,
     val tasks: List<Task>?,
-    val taskAddedEvent: MviEventRaw<Unit>?,
-    val errorEvent: MviEventRaw<Throwable>?,
+    val taskAddedEvent: MviEvent<Boolean>?,
+    val errorEvent: MviEvent<Throwable>?,
 ) : MviViewState {
 
     override fun isSavable(): Boolean = !inProgress

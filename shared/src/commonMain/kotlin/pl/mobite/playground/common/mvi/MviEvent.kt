@@ -5,20 +5,34 @@ import pl.mobite.playground.common.Parcelize
 import pl.mobite.playground.common.RawValue
 import pl.mobite.playground.common.randomUUID
 
-interface MviEvent<T> {
-    val value: T
-    val id: String
+abstract class MviEvent<T>() : Parcelable {
+    abstract val value: T
+    abstract val id: String
+
+    /**
+     * Static creator methods are ued in order to hide implementation details of each MviEvent type
+     */
+    companion object {
+
+        fun create(value: Parcelable): MviEvent<Parcelable> = MviEventParcelable(value)
+
+        fun create(value: Boolean): MviEvent<Boolean> = MviEventRaw(value)
+        fun create(value: Int): MviEvent<Int> = MviEventRaw(value)
+        fun create(value: Long): MviEvent<Long> = MviEventRaw(value)
+        fun create(value: String): MviEvent<String> = MviEventRaw(value)
+        fun create(value: Throwable): MviEvent<Throwable> = MviEventRaw(value)
+    }
 }
 
-// TODO: think of some better division
 @Parcelize
-data class MviEventParcelable<T: Parcelable>(
+private data class MviEventParcelable<T: Parcelable>(
     override val value: T,
     override val id: String = randomUUID()
-) : MviEvent<T>, Parcelable
+)  : MviEvent<T>()
 
 @Parcelize
-data class MviEventRaw<T>(
+private data class MviEventRaw<T>(
     override val value: @RawValue T,
     override val id: String = randomUUID()
-) : MviEvent<T>, Parcelable
+) : MviEvent<T>()
+

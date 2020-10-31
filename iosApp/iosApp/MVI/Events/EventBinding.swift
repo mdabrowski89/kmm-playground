@@ -1,4 +1,4 @@
 import struct SwiftUI.Binding
-import class shared.MviEventRaw
+import class shared.MviEvent
 
-typealias EventBinding<Value> = Binding<MviEventRaw<Value>?> where Value: AnyObject
+typealias EventBinding<Value> = Binding<MviEvent<Value>?> where Value: AnyObject

@@ -44,7 +44,7 @@ final class ViewStore<Action, State>: ObservableObject {
     }
 
     func binding<Value>(
-        for keyPath: KeyPath<State, MviEventRaw<Value>?>,
+        for keyPath: KeyPath<State, MviEvent<Value>?>,
         id: AnyHashable
     ) -> EventBinding<Value> {
         guard let event = state[keyPath: keyPath] else {
@@ -61,7 +61,7 @@ final class ViewStore<Action, State>: ObservableObject {
     }
 
     func binding<Value>(
-        for keyPath: KeyPath<State, MviEventRaw<Value>?>
+        for keyPath: KeyPath<State, MviEvent<Value>?>
     ) -> EventBinding<Value> {
         binding(for: keyPath, id: keyPath)
     }

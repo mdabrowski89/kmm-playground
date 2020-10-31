@@ -1,8 +1,6 @@
 package pl.mobite.playground.domain.home.mvi.impl
 
 import pl.mobite.playground.common.mvi.MviEvent
-import pl.mobite.playground.common.mvi.MviEventParcelable
-import pl.mobite.playground.common.mvi.MviEventRaw
 import pl.mobite.playground.common.mvi.api.MviResultReducer
 import pl.mobite.playground.domain.home.mvi.impl.HomeResult.AddTaskResult
 import pl.mobite.playground.domain.home.mvi.impl.HomeResult.DeleteCompletedTasksResult
@@ -41,7 +39,7 @@ class HomeResultReducer : MviResultReducer<HomeResult, HomeViewState> {
 
     private fun HomeViewState.reduce(result: ErrorResult) = copy(
         inProgress = false,
-        errorEvent = MviEventRaw(result.t)
+        errorEvent = MviEvent.create(result.t)
     )
 
     private fun HomeViewState.reduce(result: LoadTasksResult) = copy(
@@ -52,7 +50,7 @@ class HomeResultReducer : MviResultReducer<HomeResult, HomeViewState> {
     private fun HomeViewState.reduce(result: AddTaskResult) = copy(
         inProgress = false,
         tasks = tasks?.toMutableList()?.apply { add(result.addedTask) }?.toList(),
-        taskAddedEvent = MviEventRaw(Unit)
+        taskAddedEvent = MviEvent.create(true)
     )
 
     private fun HomeViewState.reduce(result: UpdateTaskResult) = copy(
