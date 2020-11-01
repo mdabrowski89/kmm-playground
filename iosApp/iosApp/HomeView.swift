@@ -3,22 +3,22 @@ import Combine
 import shared
 
 struct HomeView: View {
-    
+
     @ObservedObject private var viewStore: ViewStore<HomeAction, HomeViewState>
-    
+
     @State private var text: String = ""
-    
+
     init(store: Store<HomeAction, HomeViewState> = HomeStore()) {
         self.viewStore = .init(store: store)
     }
-    
+
     var body: some View {
         ZStack {
             VStack {
                 HStack {
                     TextField("Add new task", text: $text)
                     Button {
-                        viewStore.accept { $0.addTask(taskContent: text) }
+                        viewStore.dispatch { $0.addTask(taskContent: text) }
                     } label: {
                         Text("Add")
                     }
@@ -26,12 +26,12 @@ struct HomeView: View {
                 .padding()
                 Divider()
                 Button("Delete completed Tasks") {
-                    viewStore.accept { $0.deleteCompletedTasks() }
+                    viewStore.dispatch { $0.deleteCompletedTasks() }
                 }
                 Divider()
                 List(viewStore.tasks ?? []) { task in
                     Button {
-                        viewStore.accept { $0.updateTask(taskId: task.id, isDone: !task.isDone) }
+                        viewStore.dispatch { $0.updateTask(taskId: task.id, isDone: !task.isDone) }
                     } label: {
                         HStack {
                             Text("\(task.content)")
@@ -47,7 +47,7 @@ struct HomeView: View {
             leading: viewStore.inProgress ? AnyView(ActivityIndicator()) : AnyView(EmptyView())
         )
         .onAppear {
-            viewStore.accept { $0.loadDataIfNeeded() }
+            viewStore.dispatch { $0.loadDataIfNeeded() }
         }
         .alert(
             event: viewStore.binding(for: \.errorEvent),
@@ -63,7 +63,7 @@ struct HomeView: View {
 
 #if DEBUG
 extension HomeViewState {
-    
+
     static func preview() -> HomeViewState {
         .init(
             inProgress: true,
@@ -75,10 +75,10 @@ extension HomeViewState {
 }
 
 struct HomeView_Previews: PreviewProvider {
-    
+
     static var previews: some View {
         NavigationView {
-            HomeView(store: PreviewStore(state: .preview()))
+            HomeView(store: EmptyStore(initialState: .preview()))
         }
         .navigationViewStyle(StackNavigationViewStyle())
     }

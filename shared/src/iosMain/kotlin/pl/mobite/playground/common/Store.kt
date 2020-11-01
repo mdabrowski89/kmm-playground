@@ -33,12 +33,9 @@ abstract class MviStore<A: MviAction, R: MviResult, VS: MviViewState>(
     override fun dispose() = storeScope.cancel()
 }
 
-class PreviewStore<A: MviAction, VS: MviViewState>(
-    val state: VS
-): Store<A, VS>() {
-
+class EmptyStore<A: MviAction, VS: MviViewState>(
     override val initialState: VS
-        get() = state
+): Store<A, VS>() {
 
     override fun stateObserver(observer: (VS) -> Unit) {
         // no-op
