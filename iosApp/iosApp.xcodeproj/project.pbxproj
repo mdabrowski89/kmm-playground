@@ -20,7 +20,7 @@
 		93161975252F1A6E006AB3DB /* Koin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93161974252F1A6E006AB3DB /* Koin.swift */; };
 		9375D770252DEFD100AF9D24 /* InMemoryTaskService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9375D76F252DEFD100AF9D24 /* InMemoryTaskService.swift */; };
 		DC52A55A254B088C00CFADA5 /* View+Event.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC52A559254B088C00CFADA5 /* View+Event.swift */; };
-		DC52A562254B08CF00CFADA5 /* SingleEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC52A561254B08CF00CFADA5 /* SingleEvent.swift */; };
+		DC52A562254B08CF00CFADA5 /* Event.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC52A561254B08CF00CFADA5 /* Event.swift */; };
 		DC52A56D254B096B00CFADA5 /* View+OnChange.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC52A56C254B096B00CFADA5 /* View+OnChange.swift */; };
 		DC52A59F254EE46300CFADA5 /* Identified.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC52A59E254EE46300CFADA5 /* Identified.swift */; };
 		DC553D4C25345E43001BBC8D /* ViewStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC553D4B25345E43001BBC8D /* ViewStore.swift */; };
@@ -79,7 +79,7 @@
 		93161974252F1A6E006AB3DB /* Koin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Koin.swift; sourceTree = "<group>"; };
 		9375D76F252DEFD100AF9D24 /* InMemoryTaskService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InMemoryTaskService.swift; sourceTree = "<group>"; };
 		DC52A559254B088C00CFADA5 /* View+Event.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "View+Event.swift"; sourceTree = "<group>"; };
-		DC52A561254B08CF00CFADA5 /* SingleEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SingleEvent.swift; sourceTree = "<group>"; };
+		DC52A561254B08CF00CFADA5 /* Event.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Event.swift; sourceTree = "<group>"; };
 		DC52A56C254B096B00CFADA5 /* View+OnChange.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "View+OnChange.swift"; sourceTree = "<group>"; };
 		DC52A59E254EE46300CFADA5 /* Identified.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Identified.swift; sourceTree = "<group>"; };
 		DC553D4B25345E43001BBC8D /* ViewStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewStore.swift; sourceTree = "<group>"; };
@@ -192,7 +192,7 @@
 			isa = PBXGroup;
 			children = (
 				DC52A559254B088C00CFADA5 /* View+Event.swift */,
-				DC52A561254B08CF00CFADA5 /* SingleEvent.swift */,
+				DC52A561254B08CF00CFADA5 /* Event.swift */,
 			);
 			path = Events;
 			sourceTree = "<group>";
@@ -389,7 +389,7 @@
 				9375D770252DEFD100AF9D24 /* InMemoryTaskService.swift in Sources */,
 				DC52A59F254EE46300CFADA5 /* Identified.swift in Sources */,
 				DC52A56D254B096B00CFADA5 /* View+OnChange.swift in Sources */,
-				DC52A562254B08CF00CFADA5 /* SingleEvent.swift in Sources */,
+				DC52A562254B08CF00CFADA5 /* Event.swift in Sources */,
 				7555FF83242A565900829871 /* HomeView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

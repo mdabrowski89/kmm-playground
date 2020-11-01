@@ -10,7 +10,7 @@ struct HomeView: View {
     
     @State private var text: String = ""
 
-    @State private var error: SingleEvent<String>?
+    @State private var error: Event<String>?
 
     init(store: Store = .store(from: HomeViewModel())) {
         self.viewStore = .init(store: store)
