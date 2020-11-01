@@ -12,15 +12,3 @@ extension View {
         }
     }
 }
-
-extension View {
-
-    func alert<Value>(
-        event: EventBinding<Value>,
-        content: (Value) -> Alert
-    ) -> some View {
-        alert(item: event) { event in
-            event.value.map(content) ?? Alert(title: Text(""))
-        }
-    }
-}
