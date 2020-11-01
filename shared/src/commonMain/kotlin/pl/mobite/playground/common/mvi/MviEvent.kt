@@ -5,7 +5,7 @@ import pl.mobite.playground.common.Parcelize
 import pl.mobite.playground.common.RawValue
 import pl.mobite.playground.common.randomUUID
 
-abstract class MviEvent<T> : Parcelable {
+abstract class MviEvent<T: Any> : Parcelable {
     abstract val value: T
     abstract val id: String
 
@@ -31,7 +31,7 @@ private data class MviEventParcelable<T: Parcelable>(
 )  : MviEvent<T>()
 
 @Parcelize
-private data class MviEventRaw<T>(
+private data class MviEventRaw<T: Any>(
     override val value: @RawValue T,
     override val id: String = randomUUID()
 ) : MviEvent<T>()
