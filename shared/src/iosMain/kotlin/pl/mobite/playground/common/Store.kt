@@ -7,7 +7,7 @@ import pl.mobite.playground.common.mvi.api.MviAction
 import pl.mobite.playground.common.mvi.api.MviResult
 import pl.mobite.playground.common.mvi.api.MviViewState
 
-abstract class Store<A: MviAction, VS: MviViewState> {
+abstract class Store<A: Any, VS: Any> {
     abstract val initialState: VS
     abstract fun stateObserver(observer: (VS) -> Unit)
     abstract fun dispatch(intent: (VS) -> A?)
