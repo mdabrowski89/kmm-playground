@@ -8,7 +8,7 @@ extension View {
         perform action: @escaping (Value) -> Void
     ) -> some View {
         onChange(of: event) {
-            $0.flatMap(\.value).map(action)
+            $0.map { action($0.value) }
         }
     }
 }

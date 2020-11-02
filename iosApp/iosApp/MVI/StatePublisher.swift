@@ -22,7 +22,9 @@ private extension StatePublisher {
 
         init(observer: @escaping StateObserver<Downstream.Input>, downstream: Downstream) {
             self.downstream = downstream
-            observer { _ = $0.map(downstream.receive) }
+            observer {
+                _ = downstream.receive($0)
+            }
         }
     }
 }
