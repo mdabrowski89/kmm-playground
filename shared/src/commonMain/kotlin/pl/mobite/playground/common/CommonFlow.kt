@@ -3,7 +3,7 @@ package pl.mobite.playground.common
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
 
-fun <T> Flow<T>.asCommonFlow(coroutineScope: CoroutineScope): CommonFlow<T> = CommonFlow(coroutineScope, this)
+fun <T: Any> Flow<T>.asCommonFlow(coroutineScope: CoroutineScope): CommonFlow<T> = CommonFlow(coroutineScope, this)
 
 /**
  * Wrapper around Flow which allows to consume it on iOS,
@@ -13,7 +13,7 @@ fun <T> Flow<T>.asCommonFlow(coroutineScope: CoroutineScope): CommonFlow<T> = Co
  *
  * but with coroutine scope passed as an argument
  */
-class CommonFlow<T>(
+class CommonFlow<T: Any>(
     private val coroutineScope: CoroutineScope,
     private val origin: Flow<T>
 ) : Flow<T> by origin {

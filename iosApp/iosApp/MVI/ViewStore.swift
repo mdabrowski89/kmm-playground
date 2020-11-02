@@ -17,8 +17,6 @@ final class ViewStore<Action, State>: ObservableObject {
 
     private var viewCancellable: AnyCancellable?
 
-    private var bindings: [AnyHashable: String] = [:]
-
     init(
         store: Store<Action, State>,
         removeDuplicates isDuplicate: @escaping (State, State) -> Bool
@@ -41,44 +39,6 @@ final class ViewStore<Action, State>: ObservableObject {
 
     func dispatch(_ intent: @escaping (State) -> Action?) {
         _dispatch(intent)
-    }
-
-    func binding<Value>(
-        for keyPath: KeyPath<State, MviEvent<Value>?>,
-        id: AnyHashable,
-        _ file: StaticString = #file,
-        _ line: UInt = #line
-    ) -> EventBinding<Value> {
-        let binding = state[keyPath: keyPath].map { event -> EventBinding<Value> in
-            .init(
-                get: { [unowned self] in
-                    self.bindings[id] == event.id ? nil : event
-                },
-                set: { [unowned self] in
-                    guard $0 == nil else { return }
-                    guard self.bindings[id] != event.id else {
-                        assertionFailure(
-                            "Event with id \(event.id) is already consumed",
-                            file: file,
-                            line: line
-                        )
-                        return
-                    }
-
-                    self.bindings[id] = event.id
-                }
-            )
-        }
-
-        return binding ?? .constant(nil)
-    }
-
-    func binding<Value>(
-        for keyPath: KeyPath<State, MviEvent<Value>?>,
-        _ file: StaticString = #file,
-        _ line: UInt = #line
-    ) -> EventBinding<Value> {
-        binding(for: keyPath, id: keyPath, file, line)
     }
 }
 

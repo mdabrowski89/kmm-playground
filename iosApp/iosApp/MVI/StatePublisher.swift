@@ -3,7 +3,7 @@ import Combine
 struct StatePublisher<Output>: Publisher {
     typealias Failure = Never
 
-    typealias Observer = (@escaping (Output?) -> Void) -> Void
+    typealias Observer = (@escaping (Output) -> Void) -> Void
 
     private let observer: Observer
 
@@ -24,7 +24,9 @@ private extension StatePublisher {
 
         init(observer: @escaping Observer, downstream: Downstream) {
             self.downstream = downstream
-            observer { _ = $0.map(downstream.receive) }
+            observer {
+                _ = downstream.receive($0)
+            }
         }
     }
 }
