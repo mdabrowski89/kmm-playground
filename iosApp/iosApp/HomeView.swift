@@ -4,15 +4,13 @@ import shared
 
 struct HomeView: View {
 
-    typealias Store = AnyStore<HomeAction, HomeViewState>
-
     @ObservedObject private var viewStore: ViewStore<HomeAction, HomeViewState>
 
     @State private var text: String = ""
 
     @State private var error: Event<KotlinThrowable>?
 
-    init(store: Store = .store(from: HomeViewModel())) {
+    init(store: Store<HomeAction, HomeViewState> = HomeStore()) {
         self.viewStore = .init(store: store)
     }
 
@@ -22,7 +20,7 @@ struct HomeView: View {
                 HStack {
                     TextField("Add new task", text: $text)
                     Button {
-                        viewStore.accept { $0.addTask(taskContent: text) }
+                        viewStore.dispatch { $0.addTask(taskContent: text) }
                     } label: {
                         Text("Add")
                     }
@@ -30,12 +28,12 @@ struct HomeView: View {
                 .padding()
                 Divider()
                 Button("Delete completed Tasks") {
-                    viewStore.accept { $0.deleteCompletedTasks() }
+                    viewStore.dispatch { $0.deleteCompletedTasks() }
                 }
                 Divider()
                 List(viewStore.tasks ?? []) { task in
                     Button {
-                        viewStore.accept { $0.updateTask(taskId: task.id, isDone: !task.isDone) }
+                        viewStore.dispatch { $0.updateTask(taskId: task.id, isDone: !task.isDone) }
                     } label: {
                         HStack {
                             Text("\(task.content)")
@@ -51,7 +49,7 @@ struct HomeView: View {
             leading: viewStore.inProgress ? AnyView(ActivityIndicator()) : AnyView(EmptyView())
         )
         .onAppear {
-            viewStore.accept { $0.loadDataIfNeeded() }
+            viewStore.dispatch { $0.loadDataIfNeeded() }
         }
         .alert(item: $error) { event in
             Alert(title: Text(event.message ?? ""))
@@ -82,7 +80,7 @@ struct HomeView_Previews: PreviewProvider {
 
     static var previews: some View {
         NavigationView {
-            HomeView(store: .preview(state: .preview()))
+            HomeView(store: EmptyStore(initialState: .preview()))
         }
         .navigationViewStyle(StackNavigationViewStyle())
     }

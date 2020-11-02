@@ -11,18 +11,18 @@ final class ViewStore<Action, State>: ObservableObject {
         }
     }
 
-    private let dispatch: Dispatcher<State, Action>
+    private let _dispatch: (@escaping (State) -> Action?) -> Void
 
     private let dispose: () -> Void
 
     private var viewCancellable: AnyCancellable?
 
     init(
-        store: AnyStore<Action, State>,
+        store: Store<Action, State>,
         removeDuplicates isDuplicate: @escaping (State, State) -> Bool
-    ) {
-        self.state = store.defaultState()
-        self.dispatch = store.dispatch
+    ) where Action: AnyObject, State: AnyObject {
+        self.state = store.initialState
+        self._dispatch = store.dispatch
         self.dispose = store.dispose
         self.viewCancellable = StatePublisher(store.stateObserver)
             .removeDuplicates(by: isDuplicate)
@@ -37,14 +37,16 @@ final class ViewStore<Action, State>: ObservableObject {
         state[keyPath: keyPath]
     }
 
-    func accept(_ intent: @escaping (State) -> Action?) {
-        dispatch(intent)
+    func dispatch(_ intent: @escaping (State) -> Action?) {
+        _dispatch(intent)
     }
 }
 
 extension ViewStore where State: Equatable {
 
-    convenience init(store: AnyStore<Action, State>) {
+    convenience init(
+        store: Store<Action, State>
+    ) where Action: AnyObject, State: AnyObject {
         self.init(
             store: store,
             removeDuplicates: ==
