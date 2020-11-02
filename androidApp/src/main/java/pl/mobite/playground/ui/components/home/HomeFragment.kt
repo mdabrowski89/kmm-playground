@@ -12,10 +12,12 @@ import androidx.recyclerview.widget.RecyclerView
 import pl.mobite.playground.R
 import pl.mobite.playground.domain.home.mvi.impl.HomeViewState
 import pl.mobite.playground.ui.base.BaseFragment
+import pl.mobite.playground.ui.base.MviEventsCache
+import pl.mobite.playground.ui.base.MviEventsCacheManager
 import pl.mobite.playground.ui.components.home.recyclerview.TasksAdapter
 import pl.mobite.playground.utils.mviController
 
-class HomeFragment : BaseFragment(R.layout.fragment_home) {
+class HomeFragment : BaseFragment(R.layout.fragment_home), MviEventsCacheManager {
 
     // TODO: replace with view binding or butterknife because the kotlinx synthetic does not work in KMM project (yet)
     private val tasksRecyclerView: RecyclerView by lazy { requireView().findViewById(R.id.tasksRecyclerView) }
@@ -31,6 +33,8 @@ class HomeFragment : BaseFragment(R.layout.fragment_home) {
         /** send action to change tasks state (completed/not completed) */
         homeMviController.accept { updateTask(taskId, isChecked) }
     }
+
+    override val cache: MviEventsCache = MviEventsCache(javaClass.name)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -74,12 +78,14 @@ class HomeFragment : BaseFragment(R.layout.fragment_home) {
                 tasksAdapter.tasks = newTasks.toList()
             }
 
-            taskAddedEvent?.consume {
-                newTaskInput.setText("")
-            }
+            with(cache) {
+                taskAddedEvent?.consume {
+                    newTaskInput.setText("")
+                }
 
-            errorEvent?.consume {
-                Toast.makeText(requireContext(), "Error occurred", Toast.LENGTH_SHORT).show()
+                errorEvent?.consume {
+                    Toast.makeText(requireContext(), "Error occurred", Toast.LENGTH_SHORT).show()
+                }
             }
         }
     }

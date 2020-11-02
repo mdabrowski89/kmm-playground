@@ -24,12 +24,16 @@ val homeModule = module {
 
     factory { HomeResultReducer() }
 
-    factory { HomeViewState() }
+    /**
+     * I think it should be bound to either cache or reducer - this floating ViewState will become
+     * a mess imho in future
+     * */
+//    factory { HomeViewState() }
 
     factory {
         HomeMviController(
             actionProcessor = get(),
-            initialViewState = get(),
+            initialViewState = HomeViewState(),
             resultReducer = get(),
             coroutineScope = MainScope()
         )

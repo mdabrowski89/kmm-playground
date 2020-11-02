@@ -1,12 +1,14 @@
 package pl.mobite.playground.common.mvi
 
 import androidx.lifecycle.SavedStateHandle
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.onEach
 import pl.mobite.playground.common.mvi.api.MviViewState
 
 abstract class MviViewStateCache<VS : MviViewState>(
     private val savedStateHandle: SavedStateHandle
 ) {
-    private val mviViewStateKey = "${javaClass.name}_MVI_VIEW_STATE_KEY"
+    private val mviViewStateKey = "mvi.cache.states.${this::class}"
 
     fun get() = savedStateHandle.get<VS>(mviViewStateKey)
 
@@ -15,10 +17,16 @@ abstract class MviViewStateCache<VS : MviViewState>(
             savedStateHandle.set(mviViewStateKey, fold(viewState))
         }
     }
+//
+//    fun useWith(controller: MviController<*, *, VS>) {
+//        /**
+//         * This watch method is a bad thing and i will advocate for never using it in kotlin code
+//         * It combines flow with scope which is against flow usage - flow is scope agnostic
+//         * */
+//        controller.viewStatesFlow.watch(::set)
+//    }
 
-    fun useWith(controller: MviController<*, *, VS>) {
-        controller.viewStatesFlow.watch(::set)
-    }
+    fun useWith(flow: Flow<VS>) = flow.onEach(::set)
 
     /**
      * Decide weather this particular instance of MviViewState could be saved in MviViewStateCache.
