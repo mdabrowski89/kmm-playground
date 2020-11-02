@@ -18,5 +18,5 @@ abstract class BaseFragment(contentLayoutId: Int = 0) : Fragment(contentLayoutId
         mviEventsCache.saveEvents(outState)
     }
 
-    protected fun <T> MviEvent<T>.consume(action: (T) -> Unit) = mviEventsCache.consumeEvent(this, action)
+    protected fun <T: Any> MviEvent<T>.consume(action: (T) -> Unit) = mviEventsCache.consumeEvent(this, action)
 }
