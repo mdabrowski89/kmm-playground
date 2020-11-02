@@ -3,11 +3,11 @@ import Combine
 import shared
 
 struct HomeView: View {
-    
+
     typealias Store = AnyStore<HomeAction, HomeViewState>
-    
+
     @ObservedObject private var viewStore: ViewStore<HomeAction, HomeViewState>
-    
+
     @State private var text: String = ""
 
     @State private var error: Event<KotlinThrowable>?
@@ -15,7 +15,7 @@ struct HomeView: View {
     init(store: Store = .store(from: HomeViewModel())) {
         self.viewStore = .init(store: store)
     }
-    
+
     var body: some View {
         ZStack {
             VStack {
@@ -67,7 +67,7 @@ struct HomeView: View {
 
 #if DEBUG
 extension HomeViewState {
-    
+
     static func preview() -> HomeViewState {
         .init(
             inProgress: true,
@@ -79,7 +79,7 @@ extension HomeViewState {
 }
 
 struct HomeView_Previews: PreviewProvider {
-    
+
     static var previews: some View {
         NavigationView {
             HomeView(store: .preview(state: .preview()))
