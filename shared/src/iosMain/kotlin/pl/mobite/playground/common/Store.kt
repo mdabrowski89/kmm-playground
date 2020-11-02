@@ -20,7 +20,7 @@ abstract class MviStore<A: MviAction, R: MviResult, VS: MviViewState>(
     abstract val mviController: MviController<A, R, VS>
 
     override val initialState: VS
-        get() = mviController.defaultViewState()
+        get() = mviController.initialViewState
 
     override fun stateObserver(observer: (VS) -> Unit) {
         mviController.viewStatesFlow.watch(observer)
