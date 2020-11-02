@@ -1,20 +1,13 @@
 package pl.mobite.playground.common.mvi
 
-import pl.mobite.playground.common.mvi.api.MviAction
-import pl.mobite.playground.common.mvi.processing.MviActionProcessing
-import pl.mobite.playground.common.mvi.api.MviResult
-import pl.mobite.playground.common.mvi.processing.MviResultProcessing
-import pl.mobite.playground.common.mvi.api.MviViewState
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
-import pl.mobite.playground.common.CommonFlow
-import pl.mobite.playground.common.asCommonFlow
-import pl.mobite.playground.common.mvi.api.MviActionProcessor
-import pl.mobite.playground.common.mvi.api.MviResultReducer
+import pl.mobite.playground.common.mvi.api.*
+import pl.mobite.playground.common.mvi.processing.MviActionProcessing
+import pl.mobite.playground.common.mvi.processing.MviResultProcessing
 
 /**
  * Wrapper around whole Mvi flow:
@@ -30,16 +23,21 @@ import pl.mobite.playground.common.mvi.api.MviResultReducer
  */
 open class MviController<A : MviAction, R : MviResult, VS : MviViewState>(
     actionProcessor: MviActionProcessor<A, R>,
-    val initialViewState: VS, // it is public because iOS is needed initial view state instance, TODO: check if is can jus inject this
     resultReducer: MviResultReducer<R, VS>,
-    private val coroutineScope: CoroutineScope
+    val initialViewState: VS, // it is public because iOS is needed initial view state instance, TODO: check if is can jus inject this
+    private val coroutineScope: CoroutineScope,
 ) {
     private val mviActionProcessing = MviActionProcessing(actionProcessor)
     private val mviResultProcessing = MviResultProcessing(initialViewState, resultReducer)
 
-    val viewStatesFlow: CommonFlow<VS> = mviResultProcessing
-        .viewStatesFlow
-        .asCommonFlow(coroutineScope)
+    /**
+     * Because iOS has it's own wrapper around mviController it should wrapper [viewStatesFlow] there
+     * with it's own scope
+     * */
+//    val viewStatesFlow: CommonFlow<VS> = mviResultProcessing
+//        .viewStatesFlow
+//        .asCommonFlow(coroutineScope)
+    val viewStatesFlow: Flow<VS> = mviResultProcessing.viewStatesFlow
 
     init {
         mviActionProcessing.resultsFlow
