@@ -3,7 +3,7 @@ import Combine
 import shared
 
 @dynamicMemberLookup
-final class ViewStore<Action, State>: ObservableObject where Action: AnyObject, State: AnyObject {
+final class ViewStore<Action, State>: ObservableObject {
 
     private(set) var state: State {
         willSet {
@@ -22,7 +22,7 @@ final class ViewStore<Action, State>: ObservableObject where Action: AnyObject, 
     init(
         store: Store<Action, State>,
         removeDuplicates isDuplicate: @escaping (State, State) -> Bool
-    ) {
+    ) where Action: AnyObject, State: AnyObject {
         self.state = store.initialState
         self._dispatch = store.dispatch
         self.dispose = store.dispose
@@ -84,7 +84,9 @@ final class ViewStore<Action, State>: ObservableObject where Action: AnyObject, 
 
 extension ViewStore where State: Equatable {
 
-    convenience init(store: Store<Action, State>) {
+    convenience init(
+        store: Store<Action, State>
+    ) where Action: AnyObject, State: AnyObject {
         self.init(
             store: store,
             removeDuplicates: ==
