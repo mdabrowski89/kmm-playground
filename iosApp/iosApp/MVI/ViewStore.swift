@@ -25,6 +25,7 @@ final class ViewStore<Action, State>: ObservableObject {
         self._dispatch = store.dispatch
         self.dispose = store.dispose
         self.viewCancellable = StatePublisher(store.stateObserver)
+            .dropFirst()
             .removeDuplicates(by: isDuplicate)
             .sink { [weak self] in self?.state = $0 }
     }
