@@ -20,7 +20,7 @@ class MviEventsCache(name: String) {
      * After consumption of single mvi event its id is added to a cache
      * in order to prevent further consumptions on the same Fragment
      */
-    fun <T> consumeEvent(event: MviEvent<T>, action: (T) -> Unit) =
+    fun <T: Any> consumeEvent(event: MviEvent<T>, action: (T) -> Unit) =
         with(event) {
             if (mviEventsCache.contains(id)) return@with
             action(value)
