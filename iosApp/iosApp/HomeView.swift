@@ -53,9 +53,9 @@ struct HomeView: View {
                 viewStore.accept { $0.loadDataIfNeeded() }
             }
             .alert(
-                event: viewStore.binding(for: \.errorEvent),
-                content: { error in
-                    Alert(title: Text(error.message ?? ""))
+                item: viewStore.binding(for: \.errorEvent),
+                content: { event in
+                    Alert(title: Text(event.value.message ?? ""))
                 }
             )
             .onEvent(viewStore.taskAddedEvent) { _ in
