@@ -12,6 +12,18 @@ abstract class Store<A: Any, VS: Any> {
     abstract fun stateObserver(observer: (VS) -> Unit)
     abstract fun dispatch(intent: (VS) -> A?)
     abstract fun dispose()
+
+    var prefix: String? = null
+        private set
+
+    fun debug(prefix: String): Store<A, VS> {
+        this.prefix = prefix
+        return this
+    }
+
+    fun debug(): Store<A, VS> {
+        return debug(prefix = "")
+    }
 }
 
 abstract class MviStore<A: MviAction, R: MviResult, VS: MviViewState>(

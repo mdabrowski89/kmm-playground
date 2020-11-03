@@ -15,6 +15,8 @@ final class ViewStore<Action, State>: ObservableObject {
 
     private let dispose: () -> Void
 
+    private var prefix: String?
+
     private var viewCancellable: AnyCancellable?
 
     init(
@@ -24,10 +26,21 @@ final class ViewStore<Action, State>: ObservableObject {
         self.state = store.initialState
         self._dispatch = store.dispatch
         self.dispose = store.dispose
+        self.prefix = store.prefix
         self.viewCancellable = StatePublisher(store.stateObserver)
             .dropFirst()
             .removeDuplicates(by: isDuplicate)
-            .sink { [weak self] in self?.state = $0 }
+            .sink { [weak self] state in
+                #if DEBUG
+                FreezerKt.freeze(obj: state)
+                self?.debugPrint(
+                    label: "receive state:",
+                    object: state
+                )
+                #endif
+
+                self?.state = state
+            }
     }
 
     deinit {
@@ -41,6 +54,21 @@ final class ViewStore<Action, State>: ObservableObject {
     func dispatch(_ intent: @escaping (State) -> Action?) {
         _dispatch(intent)
     }
+
+    #if DEBUG
+    private func debugPrint(label: String, object: Any) {
+        guard let prefix = prefix else { return }
+        debugQueue.async {
+            print(
+                """
+                \(prefix.isEmpty ? "" : "[\(prefix)] ")\(label)
+                    \(object)
+
+                """
+            )
+        }
+    }
+    #endif
 }
 
 extension ViewStore where State: Equatable {
@@ -54,3 +82,10 @@ extension ViewStore where State: Equatable {
         )
     }
 }
+
+#if DEBUG
+private let debugQueue = DispatchQueue(
+    label: "mvi.ViewStore.DebugQueue",
+    qos: .background
+)
+#endif
