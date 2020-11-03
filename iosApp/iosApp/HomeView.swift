@@ -8,7 +8,7 @@ struct HomeView: View {
 
     @State private var text: String = ""
 
-    init(store: Store<HomeAction, HomeViewState> = HomeStore()) {
+    init(store: Store<HomeAction, HomeViewState> = HomeStore().debug()) {
         self.viewStore = .init(store: store)
     }
 

@@ -27,7 +27,24 @@ final class ViewStore<Action, State>: ObservableObject {
         self.viewCancellable = StatePublisher(store.stateObserver)
             .dropFirst()
             .removeDuplicates(by: isDuplicate)
-            .sink { [weak self] in self?.state = $0 }
+            .sink { [weak self, prefix = store.prefix] state in
+                #if DEBUG
+                if let prefix = prefix {
+                    FreezerKt.freeze(obj: state)
+                    debugQueue.async {
+                        print(
+                            """
+                            \(prefix.isEmpty ? "" : "[\(prefix)] ")receive state:
+                                \(state)
+
+                            """
+                        )
+                    }
+                }
+                #endif
+
+                self?.state = state
+            }
     }
 
     deinit {
@@ -54,3 +71,10 @@ extension ViewStore where State: Equatable {
         )
     }
 }
+
+#if DEBUG
+private let debugQueue = DispatchQueue(
+    label: "mvi.ViewStore.DebugQueue",
+    qos: .background
+)
+#endif
