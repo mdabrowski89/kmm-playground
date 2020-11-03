@@ -32,6 +32,7 @@ final class ViewStore<Action, State>: ObservableObject {
             .removeDuplicates(by: isDuplicate)
             .sink { [weak self] state in
                 #if DEBUG
+                FreezerKt.freeze(obj: state)
                 self?.debugPrint(
                     label: "receive state:",
                     object: state
@@ -57,7 +58,6 @@ final class ViewStore<Action, State>: ObservableObject {
     #if DEBUG
     private func debugPrint(label: String, object: Any) {
         guard let prefix = prefix else { return }
-        FreezerKt.freeze(obj: object)
         debugQueue.async {
             print(
                 """
