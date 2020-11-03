@@ -8,7 +8,7 @@ struct HomeView: View {
 
     @State private var text: String = ""
 
-    @State private var error: Event<KotlinThrowable>?
+    @State private var errorAlert: Event<KotlinThrowable>?
 
     init(store: Store<HomeAction, HomeViewState> = HomeStore()) {
         self.viewStore = .init(store: store)
@@ -51,14 +51,14 @@ struct HomeView: View {
         .onAppear {
             viewStore.dispatch { $0.loadDataIfNeeded() }
         }
-        .alert(item: $error) { event in
+        .alert(item: $errorAlert) { event in
             Alert(title: Text(event.message ?? ""))
         }
         .onEvent(viewStore.taskAddedEvent) { _ in
             text.removeAll()
         }
         .onEvent(viewStore.errorEvent) { error in
-            self.error = .init(error)
+            errorAlert = error
         }
     }
 }

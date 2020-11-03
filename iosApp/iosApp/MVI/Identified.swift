@@ -20,10 +20,3 @@ struct Identified<ID, Value>: Identifiable where ID: Hashable {
         value[keyPath: keyPath]
     }
 }
-
-extension Identified where ID == UUID {
-
-    init(_ value: Value) {
-        self.init(value, id: .init())
-    }
-}
