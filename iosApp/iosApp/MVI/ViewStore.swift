@@ -15,6 +15,8 @@ final class ViewStore<Action, State>: ObservableObject {
 
     private let dispose: () -> Void
 
+    private var prefix: String?
+
     private var viewCancellable: AnyCancellable?
 
     init(
@@ -24,23 +26,16 @@ final class ViewStore<Action, State>: ObservableObject {
         self.state = store.initialState
         self._dispatch = store.dispatch
         self.dispose = store.dispose
+        self.prefix = store.prefix
         self.viewCancellable = StatePublisher(store.stateObserver)
             .dropFirst()
             .removeDuplicates(by: isDuplicate)
-            .sink { [weak self, prefix = store.prefix] state in
+            .sink { [weak self] state in
                 #if DEBUG
-                if let prefix = prefix {
-                    FreezerKt.freeze(obj: state)
-                    debugQueue.async {
-                        print(
-                            """
-                            \(prefix.isEmpty ? "" : "[\(prefix)] ")receive state:
-                                \(state)
-
-                            """
-                        )
-                    }
-                }
+                self?.debugPrint(
+                    label: "receive state:",
+                    object: state
+                )
                 #endif
 
                 self?.state = state
@@ -58,6 +53,22 @@ final class ViewStore<Action, State>: ObservableObject {
     func dispatch(_ intent: @escaping (State) -> Action?) {
         _dispatch(intent)
     }
+
+    #if DEBUG
+    private func debugPrint(label: String, object: Any) {
+        guard let prefix = prefix else { return }
+        FreezerKt.freeze(obj: object)
+        debugQueue.async {
+            print(
+                """
+                \(prefix.isEmpty ? "" : "[\(prefix)] ")\(label)
+                    \(object)
+
+                """
+            )
+        }
+    }
+    #endif
 }
 
 extension ViewStore where State: Equatable {
