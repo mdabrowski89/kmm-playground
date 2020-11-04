@@ -1,5 +1,6 @@
 package pl.mobite.playground.di
 
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.MainScope
 import org.koin.dsl.module
 import pl.mobite.playground.domain.home.mvi.HomeMviController
@@ -24,18 +25,12 @@ val homeModule = module {
 
     factory { HomeResultReducer() }
 
-    /**
-     * I think it should be bound to either cache or reducer - this floating ViewState will become
-     * a mess imho in future
-     * */
-//    factory { HomeViewState() }
-
-    factory {
+    factory { (initialState: HomeViewState, coroutineScope: CoroutineScope) ->
         HomeMviController(
             actionProcessor = get(),
-            initialViewState = HomeViewState(),
+            initialViewState = initialState,
             resultReducer = get(),
-            coroutineScope = MainScope()
+            coroutineScope = coroutineScope
         )
     }
 }

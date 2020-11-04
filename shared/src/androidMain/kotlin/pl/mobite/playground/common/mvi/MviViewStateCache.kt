@@ -20,14 +20,6 @@ abstract class MviViewStateCache<VS : MviViewState>(
             savedStateHandle.set(mviViewStateKey, fold(viewState))
         }
     }
-//
-//    fun useWith(controller: MviController<*, *, VS>) {
-//        /**
-//         * This watch method is a bad thing and i will advocate for never using it in kotlin code
-//         * It combines flow with scope which is against flow usage - flow is scope agnostic (collect isn't)
-//         * */
-//        controller.viewStatesFlow.watch(::set)
-//    }
 
     /**
      * Decide weather this particular instance of MviViewState could be saved in MviViewStateCache.

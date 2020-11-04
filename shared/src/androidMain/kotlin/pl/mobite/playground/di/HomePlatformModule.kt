@@ -14,13 +14,4 @@ val homePlatformModule = module {
             savedStateHandle = savedStateHandle
         )
     }
-
-    factory(override = true) { (initialState: HomeViewState, coroutineScope: CoroutineScope) ->
-        HomeMviController(
-            actionProcessor = get(),
-            initialViewState = initialState,
-            resultReducer = get(),
-            coroutineScope = coroutineScope
-        )
-    }
 }
