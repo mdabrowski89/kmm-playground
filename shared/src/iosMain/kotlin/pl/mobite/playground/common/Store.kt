@@ -1,6 +1,8 @@
 package pl.mobite.playground.common
 
 import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import org.koin.core.KoinComponent
 import pl.mobite.playground.common.mvi.MviController
 import pl.mobite.playground.common.mvi.api.MviAction
@@ -32,7 +34,7 @@ abstract class MviStore<A : MviAction, R : MviResult, VS : MviViewState>(
     abstract val mviController: MviController<A, R, VS>
 
     override fun stateObserver(observer: (VS) -> Unit) {
-        mviController.viewStatesFlow.asCommonFlow(storeScope).watch(observer)
+        mviController.viewStatesFlow.onEach { observer(it) }.launchIn(storeScope)
     }
 
     override fun dispatch(intent: (VS) -> A?) {

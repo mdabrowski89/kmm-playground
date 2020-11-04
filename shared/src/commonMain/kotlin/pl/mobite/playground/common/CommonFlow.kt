@@ -3,8 +3,6 @@ package pl.mobite.playground.common
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
 
-fun <T: Any> Flow<T>.asCommonFlow(coroutineScope: CoroutineScope): CommonFlow<T> = CommonFlow(coroutineScope, this)
-
 /**
  * Wrapper around Flow. It allows to consume flow results on iOS, and it is also used in MviViewStateCache
  * based on:
