@@ -4,7 +4,7 @@ import android.os.Bundle
 import androidx.fragment.app.Fragment
 import kotlin.reflect.safeCast
 
-abstract class BaseFragment(contentLayoutId: Int = 0) : Fragment(contentLayoutId) {
+open class BaseFragment(contentLayoutId: Int = 0) : Fragment(contentLayoutId) {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         MviSaveStateListener::class.safeCast(this)?.load(savedInstanceState)
@@ -16,7 +16,7 @@ abstract class BaseFragment(contentLayoutId: Int = 0) : Fragment(contentLayoutId
     }
 }
 
-abstract class BaseMviFragment(contentLayoutId: Int = 0) :
+open class BaseMviFragment(contentLayoutId: Int = 0) :
     BaseFragment(contentLayoutId),
     MviEventsCacheManager {
 
