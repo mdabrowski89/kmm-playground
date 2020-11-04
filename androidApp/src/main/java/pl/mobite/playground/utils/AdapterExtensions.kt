@@ -9,7 +9,7 @@ import kotlin.reflect.KProperty
 
 /**
  * Delegate [RecyclerView.Adapter] update to [DiffUtil]
- * */
+ */
 inline fun <T> Adapter<*>.update(
     crossinline task: (oldList: List<T>, newList: List<T>) -> Callback
 ) = object : ReadWriteProperty<Adapter<*>, List<T>> {

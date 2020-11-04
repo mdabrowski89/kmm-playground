@@ -78,14 +78,12 @@ class HomeFragment : BaseFragment(R.layout.fragment_home), MviEventsCacheManager
                 tasksAdapter.tasks = newTasks.toList()
             }
 
-            with(cache) {
-                taskAddedEvent?.consume {
-                    newTaskInput.setText("")
-                }
+            taskAddedEvent?.consume {
+                newTaskInput.setText("")
+            }
 
-                errorEvent?.consume {
-                    Toast.makeText(requireContext(), "Error occurred", Toast.LENGTH_SHORT).show()
-                }
+            errorEvent?.consume {
+                Toast.makeText(requireContext(), "Error occurred", Toast.LENGTH_SHORT).show()
             }
         }
     }

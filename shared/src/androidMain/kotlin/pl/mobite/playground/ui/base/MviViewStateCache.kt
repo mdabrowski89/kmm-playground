@@ -1,13 +1,11 @@
-package pl.mobite.playground.common.mvi
+package pl.mobite.playground.ui.base
 
 import androidx.lifecycle.SavedStateHandle
 import pl.mobite.playground.common.mvi.api.MviViewState
 
 /**
- * either this shoud be in androidApp ui.base (where MviEventsCache is)
- * or ui.base MviEventCache & MviEventCacheManager and SaveStateListener
- * should be in this package (imho first one is the valid one)
- * */
+ * // todo add doc
+ */
 abstract class MviViewStateCache<VS : MviViewState>(
     private val savedStateHandle: SavedStateHandle
 ) {

@@ -6,5 +6,8 @@ import pl.mobite.playground.common.MviStore
 import pl.mobite.playground.domain.home.mvi.HomeMviController
 
 class HomeStore : MviStore<HomeAction, HomeResult, HomeViewState>() {
-    override val mviController: HomeMviController by inject { parametersOf(HomeViewState(), storeScope) }
+
+    override val initialState = HomeViewState()
+
+    override val mviController: HomeMviController by inject { parametersOf(initialState, storeScope) }
 }

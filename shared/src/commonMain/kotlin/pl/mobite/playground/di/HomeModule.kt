@@ -1,7 +1,6 @@
 package pl.mobite.playground.di
 
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.MainScope
 import org.koin.dsl.module
 import pl.mobite.playground.domain.home.mvi.HomeMviController
 import pl.mobite.playground.domain.home.mvi.impl.AddTaskActionProcessor
@@ -28,8 +27,8 @@ val homeModule = module {
     factory { (initialState: HomeViewState, coroutineScope: CoroutineScope) ->
         HomeMviController(
             actionProcessor = get(),
-            initialViewState = initialState,
             resultReducer = get(),
+            initialViewState = initialState,
             coroutineScope = coroutineScope
         )
     }

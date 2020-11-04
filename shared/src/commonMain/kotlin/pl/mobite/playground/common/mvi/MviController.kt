@@ -24,7 +24,7 @@ import pl.mobite.playground.common.mvi.processing.MviResultProcessing
 open class MviController<A : MviAction, R : MviResult, VS : MviViewState>(
     actionProcessor: MviActionProcessor<A, R>,
     resultReducer: MviResultReducer<R, VS>,
-    val initialViewState: VS, // it is public because iOS is needed initial view state instance, TODO: check if is can jus inject this
+    initialViewState: VS,
     private val coroutineScope: CoroutineScope,
 ) {
     private val mviActionProcessing = MviActionProcessing(actionProcessor)

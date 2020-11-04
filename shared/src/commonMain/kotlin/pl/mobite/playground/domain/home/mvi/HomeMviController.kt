@@ -10,13 +10,13 @@ import kotlinx.coroutines.CoroutineScope
 
 class HomeMviController(
     actionProcessor: HomeActionProcessor,
-    initialViewState: HomeViewState,
     resultReducer: HomeResultReducer,
+    initialViewState: HomeViewState,
     coroutineScope: CoroutineScope
 ) : MviController<HomeAction, HomeResult, HomeViewState>(
     actionProcessor = actionProcessor,
-    initialViewState = initialViewState,
     resultReducer = resultReducer,
+    initialViewState = initialViewState,
     coroutineScope = coroutineScope
 )
 

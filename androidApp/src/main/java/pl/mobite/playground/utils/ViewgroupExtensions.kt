@@ -7,6 +7,6 @@ import androidx.annotation.LayoutRes
 
 /**
  * Inflate new layout using [ViewGroup] parent's context
- * */
+ */
 fun ViewGroup.inflateItem(@LayoutRes layout: Int): View =
     LayoutInflater.from(context).inflate(layout, this, false)

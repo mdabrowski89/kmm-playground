@@ -19,9 +19,6 @@ abstract class MviStore<A : MviAction, R : MviResult, VS : MviViewState>(
 ) : KoinComponent, Store<A, VS>() {
     abstract val mviController: MviController<A, R, VS>
 
-    override val initialState: VS
-        get() = mviController.initialViewState
-
     override fun stateObserver(observer: (VS) -> Unit) {
         mviController.viewStatesFlow.asCommonFlow(storeScope).watch(observer)
     }
