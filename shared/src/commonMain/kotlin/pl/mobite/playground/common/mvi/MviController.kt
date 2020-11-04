@@ -1,44 +1,41 @@
 package pl.mobite.playground.common.mvi
 
-import pl.mobite.playground.common.mvi.api.MviAction
-import pl.mobite.playground.common.mvi.processing.MviActionProcessing
-import pl.mobite.playground.common.mvi.api.MviResult
-import pl.mobite.playground.common.mvi.processing.MviResultProcessing
-import pl.mobite.playground.common.mvi.api.MviViewState
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
-import pl.mobite.playground.common.CommonFlow
-import pl.mobite.playground.common.asCommonFlow
+import pl.mobite.playground.common.mvi.api.*
+import pl.mobite.playground.common.mvi.processing.MviActionProcessing
+import pl.mobite.playground.common.mvi.processing.MviResultProcessing
 
 /**
- * Wrapper around whole Mvi flow: MviAction -> processing -> MviResult -> reducing -> MviViewState
+ * Wrapper around whole Mvi flow:
+ * [MviAction] -> [MviActionProcessor] -> [MviResult] -> [MviResultReducer] -> [MviViewState]
  *
  * MviAction's are consumed with `fun accept(...)` and flow with MviViewStates is available with
  * the property `val viewStatesFlow`
  *
- * @param mviActionProcessing
- * @param mviResultProcessing
- * @param coroutineScope
+ * @param actionProcessor - [MviActionProcessor]
+ * @param initialViewState - [MviViewState]
+ * @param resultReducer - [MviResult]
+ * @param coroutineScope - [CoroutineScope]
  */
 open class MviController<A : MviAction, R : MviResult, VS : MviViewState>(
-    private val mviActionProcessing: MviActionProcessing<A, R>,
-    private val mviResultProcessing: MviResultProcessing<R, VS>,
-    private val coroutineScope: CoroutineScope
+    actionProcessor: MviActionProcessor<A, R>,
+    resultReducer: MviResultReducer<R, VS>,
+    initialViewState: VS,
+    private val coroutineScope: CoroutineScope,
 ) {
-    val viewStatesFlow: CommonFlow<VS> = mviResultProcessing
-        .viewStatesFlow
-        .asCommonFlow(coroutineScope)
+    private val mviActionProcessing = MviActionProcessing(actionProcessor)
+    private val mviResultProcessing = MviResultProcessing(initialViewState, resultReducer)
+
+    val viewStatesFlow: Flow<VS> = mviResultProcessing.viewStatesFlow
 
     init {
         mviActionProcessing.resultsFlow
             .onEach(mviResultProcessing::accept)
             .launchIn(coroutineScope)
-
-        mviResultProcessing.savableOutput.launchIn(coroutineScope)
     }
 
     fun accept(intent: VS.() -> A?) {
@@ -48,8 +45,4 @@ open class MviController<A : MviAction, R : MviResult, VS : MviViewState>(
             )
         }
     }
-
-    /** Used on iOS implementation of the framework */
-    // TODO: inject default state into MviController
-    fun defaultViewState(): VS = mviResultProcessing.defaultViewState()
 }

@@ -6,7 +6,7 @@ import kotlinx.coroutines.flow.*
 fun <T: Any> Flow<T>.asCommonFlow(coroutineScope: CoroutineScope): CommonFlow<T> = CommonFlow(coroutineScope, this)
 
 /**
- * Wrapper around Flow which allows to consume it on iOS,
+ * Wrapper around Flow. It allows to consume flow results on iOS, and it is also used in MviViewStateCache
  * based on:
  * https://stackoverflow.com/questions/64175099/listen-to-kotlin-coroutine-flow-from-ios
  * https://github.com/JetBrains/kotlinconf-app/blob/master/common/src/mobileMain/kotlin/org/jetbrains/kotlinconf/FlowUtils.kt

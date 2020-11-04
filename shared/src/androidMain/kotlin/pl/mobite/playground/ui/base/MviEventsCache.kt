@@ -6,14 +6,14 @@ import pl.mobite.playground.common.mvi.MviEvent
 class MviEventsCache(name: String) {
 
     private val mviEventsCache = HashSet<String>()
-    private val mviEventsCacheKey = "${name}_MVI_EVENTS_CACHE_KEY"
+    private val mviEventsCacheKey = "mvi.cache.events.${name}"
 
-    fun loadEvents(inBundle: Bundle?) {
-        inBundle?.getStringArray(mviEventsCacheKey)?.let(mviEventsCache::addAll)
+    fun loadFromBundle(bundle: Bundle?) {
+        bundle?.getStringArray(mviEventsCacheKey)?.let(mviEventsCache::addAll)
     }
 
-    fun saveEvents(outBundle: Bundle?) {
-        outBundle?.putStringArray(mviEventsCacheKey, mviEventsCache.toTypedArray())
+    fun saveInBundle(bundle: Bundle?) {
+        bundle?.putStringArray(mviEventsCacheKey, mviEventsCache.toTypedArray())
     }
 
     /**

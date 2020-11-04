@@ -8,14 +8,14 @@ import kotlinx.coroutines.flow.Flow
 import pl.mobite.playground.common.mvi.processing.internal.ProcessingFlow
 
 /**
- * Wrapper around MviActionProcessors.
+ * Wrapper around [MviActionProcessor].
  *
- * It consumes MviAction's {fun accept(...)} then passes it to MviActionProcessing which produces
- * the flow of MviResult's which is available outside with a property `val resultsFlow`
+ * It consumes [MviAction]'s {fun accept(...)} then passes it to [MviActionProcessing] which produces
+ * the flow of [MviResult]'s which is available outside with a property `val [resultsFlow]`
  *
- * @param mviActionProcessor object responsible for transforming MviAction into flow of MviResults
+ * @param mviActionProcessor object responsible for transforming [MviAction] into flow of [MviResult]
  */
-open class MviActionProcessing<A : MviAction, R : MviResult>(
+class MviActionProcessing<A : MviAction, R : MviResult>(
     mviActionProcessor: MviActionProcessor<A, R>
 ) {
     private val input: Channel<A> = Channel(Channel.UNLIMITED)

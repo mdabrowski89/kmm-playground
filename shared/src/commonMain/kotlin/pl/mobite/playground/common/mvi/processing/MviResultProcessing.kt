@@ -2,38 +2,27 @@ package pl.mobite.playground.common.mvi.processing
 
 import pl.mobite.playground.common.mvi.api.MviResult
 import pl.mobite.playground.common.mvi.api.MviResultReducer
-import pl.mobite.playground.common.mvi.api.MviViewStateCache
 import pl.mobite.playground.common.mvi.api.MviViewState
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.filter
-import kotlinx.coroutines.flow.mapNotNull
-import kotlinx.coroutines.flow.onEach
 
 /**
- * Wrapper around MviResultReducer.
+ * Wrapper around [MviResultReducer].
  *
- * It consumes MviResult's {fun accept(...)} then passes it to MviResultReducer which then reduces
- * it with the latest MviViewState and produces new MviViewState which is available outside with
- * a property `val viewStatesFlow`
+ * It consumes [MviResult]'s {fun accept(...)} then passes it to [MviResultReducer] which then reduces
+ * it with the latest [MviViewState] and produces new [MviViewState] which is available outside with
+ * a property `val [viewStatesFlow]`
  *
- * @param mviViewStateCache an implementation of cache which could hold an initial instance of
- * a MviViewState. It should be used when recreating MviResultProcessing object to provide the
- * latest MviViewState (it is better to use the latest one and not the default one)
- * @param mviResultReducer object responsible for reducing MviResults with MviViewState
- * and producing new MviViewState
+ * @param initialViewState initial value for an output flow of [MviViewState] - [viewStatesFlow]
+ * @param mviResultReducer object responsible for reducing [MviResult] with [MviViewState]
+ * and producing new [MviViewState]
  */
 @Suppress("EXPERIMENTAL_API_USAGE")
-open class MviResultProcessing<R : MviResult, VS : MviViewState>(
-    mviViewStateCache: MviViewStateCache<VS>,
+class MviResultProcessing<R : MviResult, VS : MviViewState>(
+    initialViewState: VS,
     private val mviResultReducer: MviResultReducer<R, VS>
 ) {
-    private val output = MutableStateFlow(value = mviViewStateCache.get() ?: mviResultReducer.default())
-
-    val savableOutput = output
-        .filter { it.isSavable() }
-        .mapNotNull { mviResultReducer.fold(it) }
-        .onEach { mviViewStateCache.set(it) }
+    private val output = MutableStateFlow(value = initialViewState)
 
     val viewStatesFlow: Flow<VS> = output
 
@@ -42,7 +31,4 @@ open class MviResultProcessing<R : MviResult, VS : MviViewState>(
     }
 
     fun currentViewState(): VS = output.value
-
-    /** Used on iOS implementation of the framework */
-    fun defaultViewState(): VS = mviResultReducer.default()
 }

@@ -25,14 +25,6 @@ class HomeResultReducer : MviResultReducer<HomeResult, HomeViewState> {
         }
     }
 
-    override fun default(): HomeViewState =
-        HomeViewState(
-            inProgress = false,
-            tasks = null,
-            taskAddedEvent = null,
-            errorEvent = null
-        )
-
     private fun HomeViewState.reduce(@Suppress("UNUSED_PARAMETER") result: InProgressResult) = copy(
         inProgress = true
     )
