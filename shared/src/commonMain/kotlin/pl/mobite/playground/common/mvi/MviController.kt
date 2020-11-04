@@ -16,31 +16,31 @@ import pl.mobite.playground.common.mvi.processing.MviResultProcessing
  * MviAction's are consumed with `fun accept(...)` and flow with MviViewStates is available with
  * the property `val viewStatesFlow`
  *
- * @param actionProcessor - [MviActionProcessor]
+ * @param actionProcessing - [MviActionProcessing]
  * @param initialViewState - [MviViewState]
  * @param resultReducer - [MviResult]
  * @param coroutineScope - [CoroutineScope]
  */
 open class MviController<A : MviAction, R : MviResult, VS : MviViewState>(
-    actionProcessor: MviActionProcessor<A, R>,
     resultReducer: MviResultReducer<R, VS>,
     initialViewState: VS,
+    private val actionProcessing: MviActionProcessing<A, R>,
     private val coroutineScope: CoroutineScope,
 ) {
-    private val mviActionProcessing = MviActionProcessing(actionProcessor)
+
     private val mviResultProcessing = MviResultProcessing(initialViewState, resultReducer)
 
     val viewStatesFlow: Flow<VS> = mviResultProcessing.viewStatesFlow
 
     init {
-        mviActionProcessing.resultsFlow
+        actionProcessing.resultsFlow
             .onEach(mviResultProcessing::accept)
             .launchIn(coroutineScope)
     }
 
     fun accept(intent: VS.() -> A?) {
         coroutineScope.launch {
-            mviActionProcessing.accept(
+            actionProcessing.accept(
                 action = intent(mviResultProcessing.currentViewState()) ?: return@launch
             )
         }
