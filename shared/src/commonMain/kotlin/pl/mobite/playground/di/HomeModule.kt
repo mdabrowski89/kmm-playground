@@ -1,5 +1,6 @@
 package pl.mobite.playground.di
 
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.MainScope
 import org.koin.dsl.module
 import pl.mobite.playground.domain.home.mvi.HomeMviController
@@ -24,14 +25,12 @@ val homeModule = module {
 
     factory { HomeResultReducer() }
 
-    factory { HomeViewState() }
-
-    factory {
+    factory { (initialState: HomeViewState, coroutineScope: CoroutineScope) ->
         HomeMviController(
             actionProcessor = get(),
-            initialViewState = get(),
+            initialViewState = initialState,
             resultReducer = get(),
-            coroutineScope = MainScope()
+            coroutineScope = coroutineScope
         )
     }
 }

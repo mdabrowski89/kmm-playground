@@ -3,10 +3,15 @@ package pl.mobite.playground.common.mvi
 import androidx.lifecycle.SavedStateHandle
 import pl.mobite.playground.common.mvi.api.MviViewState
 
+/**
+ * either this shoud be in androidApp ui.base (where MviEventsCache is)
+ * or ui.base MviEventCache & MviEventCacheManager and SaveStateListener
+ * should be in this package (imho first one is the valid one)
+ * */
 abstract class MviViewStateCache<VS : MviViewState>(
     private val savedStateHandle: SavedStateHandle
 ) {
-    private val mviViewStateKey = "${javaClass.name}_MVI_VIEW_STATE_KEY"
+    private val mviViewStateKey = "mvi.cache.states.${this::class}"
 
     fun get() = savedStateHandle.get<VS>(mviViewStateKey)
 
@@ -14,10 +19,6 @@ abstract class MviViewStateCache<VS : MviViewState>(
         if (isSavable(viewState)) {
             savedStateHandle.set(mviViewStateKey, fold(viewState))
         }
-    }
-
-    fun useWith(controller: MviController<*, *, VS>) {
-        controller.viewStatesFlow.watch(::set)
     }
 
     /**
