@@ -15,3 +15,10 @@ abstract class BaseFragment(contentLayoutId: Int = 0) : Fragment(contentLayoutId
         MviSaveStateListener::class.safeCast(this)?.save(outState)
     }
 }
+
+abstract class BaseMviFragment(contentLayoutId: Int = 0) :
+    BaseFragment(contentLayoutId),
+    MviEventsCacheManager {
+
+    override val cache: MviEventsCache = MviEventsCache(javaClass.name)
+}

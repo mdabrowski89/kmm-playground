@@ -11,13 +11,11 @@ import androidx.lifecycle.asLiveData
 import androidx.recyclerview.widget.RecyclerView
 import pl.mobite.playground.R
 import pl.mobite.playground.domain.home.mvi.impl.HomeViewState
-import pl.mobite.playground.ui.base.BaseFragment
-import pl.mobite.playground.ui.base.MviEventsCache
-import pl.mobite.playground.ui.base.MviEventsCacheManager
+import pl.mobite.playground.ui.base.BaseMviFragment
 import pl.mobite.playground.ui.components.home.recyclerview.TasksAdapter
 import pl.mobite.playground.utils.mviController
 
-class HomeFragment : BaseFragment(R.layout.fragment_home), MviEventsCacheManager {
+class HomeFragment : BaseMviFragment(R.layout.fragment_home) {
 
     // TODO: replace with view binding or butterknife because the kotlinx synthetic does not work in KMM project (yet)
     private val tasksRecyclerView: RecyclerView by lazy { requireView().findViewById(R.id.tasksRecyclerView) }
@@ -33,8 +31,6 @@ class HomeFragment : BaseFragment(R.layout.fragment_home), MviEventsCacheManager
         /** send action to change tasks state (completed/not completed) */
         homeMviController.accept { updateTask(taskId, isChecked) }
     }
-
-    override val cache: MviEventsCache = MviEventsCache(javaClass.name)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
