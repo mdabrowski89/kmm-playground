@@ -30,7 +30,7 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.2.0")
 
     implementation("androidx.lifecycle:lifecycle-extensions:2.2.0")
-    implementation("androidx.lifecycle:lifecycle-viewmodel:2.2.0")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0")
 
     val koinVersion = "3.0.0-alpha-4"
     implementation("org.koin:koin-core:$koinVersion")

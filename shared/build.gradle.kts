@@ -40,6 +40,7 @@ kotlin {
         val androidMain by getting {
             dependencies {
                 implementation("com.google.android.material:material:1.2.1")
+                implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0")
                 implementation("androidx.lifecycle:lifecycle-viewmodel-savedstate:2.2.0")
             }
         }

@@ -1,4 +1,4 @@
-package pl.mobite.playground.ui.components.home
+package pl.mobite.playground.ui.base
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -9,7 +9,6 @@ import org.koin.core.KoinComponent
 import org.koin.core.inject
 import org.koin.core.parameter.parametersOf
 import pl.mobite.playground.common.mvi.MviController
-import pl.mobite.playground.ui.base.MviViewStateCache
 import pl.mobite.playground.common.mvi.api.MviViewState
 
 open class MviViewModel : ViewModel(), KoinComponent {
