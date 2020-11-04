@@ -30,13 +30,6 @@ open class MviController<A : MviAction, R : MviResult, VS : MviViewState>(
     private val mviActionProcessing = MviActionProcessing(actionProcessor)
     private val mviResultProcessing = MviResultProcessing(initialViewState, resultReducer)
 
-    /**
-     * Because iOS has it's own wrapper around mviController it should wrapper [viewStatesFlow] there
-     * with it's own scope
-     * */
-//    val viewStatesFlow: CommonFlow<VS> = mviResultProcessing
-//        .viewStatesFlow
-//        .asCommonFlow(coroutineScope)
     val viewStatesFlow: Flow<VS> = mviResultProcessing.viewStatesFlow
 
     init {
