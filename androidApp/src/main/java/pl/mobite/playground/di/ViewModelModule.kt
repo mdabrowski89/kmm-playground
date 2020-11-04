@@ -11,8 +11,8 @@ val viewModelModule = module {
 
     viewModel { (savedStateHandle: SavedStateHandle) ->
         HomeViewModel(
-            cache = get { parametersOf(savedStateHandle) },
-            initialState = HomeViewState()
+            viewStateCache = get { parametersOf(savedStateHandle) },
+            initialViewState = HomeViewState()
         )
     }
 }
