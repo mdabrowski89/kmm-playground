@@ -13,18 +13,18 @@ import pl.mobite.playground.common.mvi.processing.internal.ProcessingFlow
  * It consumes [MviAction]'s {fun accept(...)} then passes it to [MviActionProcessing] which produces
  * the flow of [MviResult]'s which is available outside with a property `val [resultsFlow]`
  *
- * @param mviActionProcessor object responsible for transforming [MviAction] into flow of [MviResult]
+ * [process] method is responsible for transforming [MviAction] into flow of [MviResult]
  */
-class MviActionProcessing<A : MviAction, R : MviResult>(
-    mviActionProcessor: MviActionProcessor<A, R>
-) {
+abstract class MviActionProcessing<A : MviAction, R : MviResult> {
     private val input: Channel<A> = Channel(Channel.UNLIMITED)
     private val output: Flow<R> = ProcessingFlow(
         channel = input,
-        processor = mviActionProcessor
+        processing = ::process
     )
 
     val resultsFlow: Flow<R> = output
 
     suspend fun accept(action: A) = input.send(action)
+
+    abstract fun process(action: A): Flow<R>
 }

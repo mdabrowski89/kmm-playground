@@ -19,7 +19,7 @@ import pl.mobite.playground.common.mvi.api.MviResult
 @Suppress("EXPERIMENTAL_API_USAGE")
 internal class ProcessingFlow<A : MviAction, R : MviResult>(
     channel: ReceiveChannel<A>,
-    processor: MviActionProcessor<A, R>,
+    processing: (A) -> Flow<R>,
     shouldRestart: Boolean = true // currently not used - always true
 ) : Flow<R> by channelFlow(
     block = {
@@ -34,7 +34,7 @@ internal class ProcessingFlow<A : MviAction, R : MviResult>(
                 println("cancelling job for action: $action, isCompleted: ${currentJob?.isCompleted}, job: $currentJob")
             }
             if (shouldStart) {
-                val newJob = launch(Dispatchers.Default) { processor(action).collect(::send) }
+                val newJob = launch(Dispatchers.Default) { processing(action).collect(::send) }
                 println("starting job for action: $action, job: $newJob")
                 internalJobs[action.getId()] = newJob
             }

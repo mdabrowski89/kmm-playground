@@ -1,26 +1,13 @@
 package pl.mobite.playground.domain.home.mvi.impl
 
-import pl.mobite.playground.domain.home.mvi.impl.HomeAction.AddTaskAction
-import pl.mobite.playground.domain.home.mvi.impl.HomeAction.DeleteCompletedTasksAction
-import pl.mobite.playground.domain.home.mvi.impl.HomeAction.LoadTasksAction
-import pl.mobite.playground.domain.home.mvi.impl.HomeAction.UpdateTaskAction
-import pl.mobite.playground.domain.home.mvi.impl.HomeResult.AddTaskResult
-import pl.mobite.playground.domain.home.mvi.impl.HomeResult.DeleteCompletedTasksResult
-import pl.mobite.playground.domain.home.mvi.impl.HomeResult.ErrorResult
-import pl.mobite.playground.domain.home.mvi.impl.HomeResult.InProgressResult
-import pl.mobite.playground.domain.home.mvi.impl.HomeResult.LoadTasksResult
-import pl.mobite.playground.domain.home.mvi.impl.HomeResult.UpdateTaskResult
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
 import pl.mobite.playground.common.mvi.api.MviActionProcessor
-import pl.mobite.playground.data.usecase.AddTaskUseCase
-import pl.mobite.playground.data.usecase.DeleteTasksUseCase
-import pl.mobite.playground.data.usecase.GetAllDoneTasksUseCase
-import pl.mobite.playground.data.usecase.GetAllTasksUseCase
-import pl.mobite.playground.data.usecase.GetTaskUseCase
-import pl.mobite.playground.data.usecase.UpdateTaskUseCase
+import pl.mobite.playground.common.mvi.processing.MviActionProcessing
+import pl.mobite.playground.data.usecase.*
+import pl.mobite.playground.domain.home.mvi.impl.HomeAction.*
+import pl.mobite.playground.domain.home.mvi.impl.HomeResult.*
 import pl.mobite.playground.model.Task
 import kotlin.random.Random
 
@@ -32,20 +19,18 @@ import kotlin.random.Random
  * to separate classes because each of them has different dependencies and it is responsible
  * for processing different action.
  */
-class HomeActionProcessor(
+class HomeActionProcessing(
     private val loadTasksActionProcessor: LoadTasksActionProcessor,
     private val addTaskActionProcessor: AddTaskActionProcessor,
     private val updateTaskActionProcessor: UpdateTaskActionProcessor,
     private val deleteCompletedTasksActionProcessor: DeleteCompletedTasksActionProcessor
-) : MviActionProcessor<HomeAction, HomeResult> {
+) : MviActionProcessing<HomeAction, HomeResult>() {
 
-    override fun invoke(action: HomeAction): Flow<HomeResult> {
-        return when (action) {
-            is LoadTasksAction -> loadTasksActionProcessor(action)
-            is AddTaskAction -> addTaskActionProcessor(action)
-            is UpdateTaskAction -> updateTaskActionProcessor(action)
-            is DeleteCompletedTasksAction -> deleteCompletedTasksActionProcessor(action)
-        }
+    override fun process(action: HomeAction) = when (action) {
+        is LoadTasksAction -> loadTasksActionProcessor(action)
+        is AddTaskAction -> addTaskActionProcessor(action)
+        is UpdateTaskAction -> updateTaskActionProcessor(action)
+        is DeleteCompletedTasksAction -> deleteCompletedTasksActionProcessor(action)
     }
 }
 
