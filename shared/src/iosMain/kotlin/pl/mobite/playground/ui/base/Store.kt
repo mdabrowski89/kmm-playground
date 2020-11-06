@@ -1,4 +1,4 @@
-package pl.mobite.playground.common
+package pl.mobite.playground.ui.base
 
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.launchIn
