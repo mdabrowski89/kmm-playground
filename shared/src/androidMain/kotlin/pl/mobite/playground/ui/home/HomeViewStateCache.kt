@@ -1,4 +1,4 @@
-package pl.mobite.playground.domain.home
+package pl.mobite.playground.ui.home
 
 import androidx.lifecycle.SavedStateHandle
 import pl.mobite.playground.ui.base.MviViewStateCache

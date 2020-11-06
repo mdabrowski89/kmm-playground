@@ -2,7 +2,7 @@ package pl.mobite.playground.di
 
 import androidx.lifecycle.SavedStateHandle
 import org.koin.dsl.module
-import pl.mobite.playground.domain.home.HomeViewStateCache
+import pl.mobite.playground.ui.home.HomeViewStateCache
 
 val homePlatformModule = module {
 
