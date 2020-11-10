@@ -5,7 +5,7 @@ import pl.mobite.playground.common.mvi.MviEvent
 import pl.mobite.playground.common.mvi.api.MviViewState
 import pl.mobite.playground.domain.home.mvi.impl.HomeAction.AddTaskAction
 import pl.mobite.playground.domain.home.mvi.impl.HomeAction.DeleteCompletedTasksAction
-import pl.mobite.playground.domain.home.mvi.impl.HomeAction.LoadTasksAction
+import pl.mobite.playground.domain.home.mvi.impl.HomeAction.ObserveTasksUpdatesAction
 import pl.mobite.playground.domain.home.mvi.impl.HomeAction.UpdateTaskAction
 import pl.mobite.playground.model.Task
 
@@ -20,8 +20,8 @@ data class HomeViewState(
     val errorEvent: MviEvent<Throwable>? = null,
 ) : MviViewState {
 
-    fun loadDataIfNeeded(): HomeAction? {
-        return if (tasks == null) LoadTasksAction else null
+    fun observeTasksUpdates(): HomeAction? {
+        return ObserveTasksUpdatesAction
     }
 
     fun addTask(taskContent: String): HomeAction? {

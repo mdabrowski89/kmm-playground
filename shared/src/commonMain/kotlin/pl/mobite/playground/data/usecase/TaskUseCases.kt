@@ -2,6 +2,7 @@
 
 package pl.mobite.playground.data.usecase
 
+import kotlinx.coroutines.flow.Flow
 import pl.mobite.playground.common.SuspendableUseCase0
 import pl.mobite.playground.common.SuspendableUseCase1
 import pl.mobite.playground.common.SuspendableUseCase1n
@@ -14,6 +15,9 @@ interface GetAllTasksUseCase : SuspendableUseCase0<List<Task>>
 interface GetAllDoneTasksUseCase : SuspendableUseCase0<List<Task>>
 interface UpdateTaskUseCase : SuspendableUseCase1n<Task>
 interface DeleteTasksUseCase : SuspendableUseCase1n<List<Task>>
+
+interface GetAllTasksFlowUseCase : SuspendableUseCase0<Flow<List<Task>>>
+
 
 class AddTaskUseCaseImpl(
     private val taskService: TaskService
@@ -71,5 +75,14 @@ class DeleteTasksUseCaseImpl(
 
     override suspend fun invoke(tasks: List<Task>) {
         taskService.delete(tasks)
+    }
+}
+
+class GetAllTasksFlowUseCaseImpl(
+    private val taskService: TaskService
+): GetAllTasksFlowUseCase {
+
+    override suspend fun invoke(): Flow<List<Task>> {
+        return taskService.getAllAsFlow()
     }
 }

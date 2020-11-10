@@ -9,7 +9,7 @@ val homeModule = module {
 
     factory {
         HomeActionProcessing(
-            loadTasksActionProcessor = LoadTasksActionProcessor(get()),
+            observeTasksUpdatesActionProcessor = ObserveTasksUpdatesActionProcessor(get()),
             addTaskActionProcessor = AddTaskActionProcessor(get()),
             updateTaskActionProcessor = UpdateTaskActionProcessor(get(), get()),
             deleteCompletedTasksActionProcessor = DeleteCompletedTasksActionProcessor(get(), get())

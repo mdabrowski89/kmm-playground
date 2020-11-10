@@ -1,5 +1,7 @@
 package pl.mobite.playground.data.service
 
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import pl.mobite.playground.data.room.dao.TaskDao
 import pl.mobite.playground.model.Task
 import pl.mobite.playground.model.toTask
@@ -8,6 +10,8 @@ import pl.mobite.playground.model.toTaskEntity
 class TaskServiceAndroid(
     private val taskDao: TaskDao
 ) : TaskService {
+
+    override fun getAllAsFlow(): Flow<List<Task>> = taskDao.getAllAsFlow().map { it.map { it.toTask() } }
 
     override suspend fun getAll() = taskDao.getAll().map { it.toTask() }
 

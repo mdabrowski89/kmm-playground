@@ -12,11 +12,7 @@ sealed class HomeResult : MviResult {
 
     data class ErrorResult(val t: Throwable) : HomeResult()
 
-    data class LoadTasksResult(val tasks: List<Task>) : HomeResult()
+    data class TasksListUpdatedResult(val tasks: List<Task>) : HomeResult()
 
-    data class AddTaskResult(val addedTask: Task) : HomeResult()
-
-    data class UpdateTaskResult(val updatedTask: Task) : HomeResult()
-
-    data class DeleteCompletedTasksResult(val deletedTasks: List<Task>) : HomeResult()
+    object AddTaskResult : HomeResult()
 }

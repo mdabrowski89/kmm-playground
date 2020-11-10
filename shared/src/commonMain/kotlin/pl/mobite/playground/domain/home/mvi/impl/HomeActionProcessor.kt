@@ -2,7 +2,9 @@ package pl.mobite.playground.domain.home.mvi.impl
 
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.onEach
 import pl.mobite.playground.common.mvi.api.MviActionProcessor
 import pl.mobite.playground.common.mvi.processing.MviActionProcessing
 import pl.mobite.playground.data.usecase.*
@@ -20,14 +22,14 @@ import kotlin.random.Random
  * for processing different action.
  */
 class HomeActionProcessing(
-    private val loadTasksActionProcessor: LoadTasksActionProcessor,
+    private val observeTasksUpdatesActionProcessor: ObserveTasksUpdatesActionProcessor,
     private val addTaskActionProcessor: AddTaskActionProcessor,
     private val updateTaskActionProcessor: UpdateTaskActionProcessor,
     private val deleteCompletedTasksActionProcessor: DeleteCompletedTasksActionProcessor
 ) : MviActionProcessing<HomeAction, HomeResult>() {
 
     override fun process(action: HomeAction) = when (action) {
-        is LoadTasksAction -> loadTasksActionProcessor(action)
+        is ObserveTasksUpdatesAction -> observeTasksUpdatesActionProcessor(action)
         is AddTaskAction -> addTaskActionProcessor(action)
         is UpdateTaskAction -> updateTaskActionProcessor(action)
         is DeleteCompletedTasksAction -> deleteCompletedTasksActionProcessor(action)
@@ -43,14 +45,16 @@ private const val PROCESSING_DELAY_MILS = 500L
  * differently. For example, processors could depends on repositories or services.
  */
 
-class LoadTasksActionProcessor(
-    private val getAllTasksUseCase: GetAllTasksUseCase
-) : MviActionProcessor<LoadTasksAction, HomeResult> {
+class ObserveTasksUpdatesActionProcessor(
+    private val getAllTasksFlowUseCase: GetAllTasksFlowUseCase
+) : MviActionProcessor<ObserveTasksUpdatesAction, HomeResult> {
 
-    override fun invoke(action: LoadTasksAction) = flow {
+    override fun invoke(action: ObserveTasksUpdatesAction) = flow {
         emit(InProgressResult)
         delay(PROCESSING_DELAY_MILS)
-        emit(LoadTasksResult(getAllTasksUseCase()))
+        getAllTasksFlowUseCase().onEach {
+            this.emit(TasksListUpdatedResult(it))
+        }.collect()
     }.catch {
         emit(ErrorResult(it))
     }
@@ -63,8 +67,8 @@ class AddTaskActionProcessor(
     override fun invoke(action: AddTaskAction) = flow {
         emit(InProgressResult)
         delay(PROCESSING_DELAY_MILS)
-        val newTask = addTaskUseCase(Task(Random.nextLong(), action.taskContent, false))
-        emit(AddTaskResult(newTask))
+        addTaskUseCase(Task(Random.nextLong(), action.taskContent, false))
+        emit(AddTaskResult)
     }.catch {
         emit(ErrorResult(it))
     }
@@ -79,13 +83,12 @@ class UpdateTaskActionProcessor(
         emit(InProgressResult)
         delay(PROCESSING_DELAY_MILS)
         val task = getTaskUseCase(action.taskId)?.copy(isDone = action.isDone)
-        val updateTaskResult = if (task == null) {
-            ErrorResult(Exception("Task with id ${action.taskId} not found in DB"))
+        if (task == null) {
+            emit(ErrorResult(Exception("Task with id ${action.taskId} not found in DB")))
         } else {
             updateTaskUseCase(task)
-            UpdateTaskResult(task)
+            // UI will be notified by the observing the tasks list
         }
-        emit(updateTaskResult)
     }.catch {
         emit(ErrorResult(it))
     }
@@ -96,12 +99,11 @@ class DeleteCompletedTasksActionProcessor(
     private val deleteTasksUseCase: DeleteTasksUseCase
 ) : MviActionProcessor<DeleteCompletedTasksAction, HomeResult> {
 
-    override fun invoke(action: DeleteCompletedTasksAction) = flow {
+    override fun invoke(action: DeleteCompletedTasksAction) = flow<HomeResult> {
         emit(InProgressResult)
         delay(PROCESSING_DELAY_MILS)
-        val doneTasks = getAllDoneTasksUseCase()
-        deleteTasksUseCase(doneTasks)
-        emit(DeleteCompletedTasksResult(doneTasks))
+        deleteTasksUseCase(getAllDoneTasksUseCase())
+        // UI will be notified by the observing the tasks list
     }.catch {
         emit(ErrorResult(it))
     }

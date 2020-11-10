@@ -6,10 +6,14 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
+import kotlinx.coroutines.flow.Flow
 import pl.mobite.playground.data.room.entities.TaskEntity
 
 @Dao
 interface TaskDao {
+
+    @Query("SELECT * FROM task")
+    fun getAllAsFlow(): Flow<List<TaskEntity>>
 
     @Query("SELECT * FROM task")
     suspend fun getAll(): List<TaskEntity>

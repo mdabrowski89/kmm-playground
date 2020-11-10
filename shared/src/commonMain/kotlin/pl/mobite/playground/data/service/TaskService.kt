@@ -1,8 +1,11 @@
 package pl.mobite.playground.data.service
 
+import kotlinx.coroutines.flow.Flow
 import pl.mobite.playground.model.Task
 
 interface TaskService {
+
+    fun getAllAsFlow(): Flow<List<Task>>
 
     suspend fun getAll(): List<Task>
 

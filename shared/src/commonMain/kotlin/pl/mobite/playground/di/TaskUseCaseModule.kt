@@ -7,6 +7,8 @@ import pl.mobite.playground.data.usecase.DeleteTasksUseCase
 import pl.mobite.playground.data.usecase.DeleteTasksUseCaseImpl
 import pl.mobite.playground.data.usecase.GetAllDoneTasksUseCase
 import pl.mobite.playground.data.usecase.GetAllDoneTasksUseCaseImpl
+import pl.mobite.playground.data.usecase.GetAllTasksFlowUseCase
+import pl.mobite.playground.data.usecase.GetAllTasksFlowUseCaseImpl
 import pl.mobite.playground.data.usecase.GetAllTasksUseCase
 import pl.mobite.playground.data.usecase.GetAllTasksUseCaseImpl
 import pl.mobite.playground.data.usecase.GetTaskUseCase
@@ -21,4 +23,6 @@ val taskUseCaseModule = module {
     factory<GetAllDoneTasksUseCase> { GetAllDoneTasksUseCaseImpl(get()) }
     factory<UpdateTaskUseCase> { UpdateTaskUseCaseImpl(get()) }
     factory<DeleteTasksUseCase> { DeleteTasksUseCaseImpl(get()) }
+
+    factory<GetAllTasksFlowUseCase> { GetAllTasksFlowUseCaseImpl(get()) }
 }

@@ -7,7 +7,7 @@ import pl.mobite.playground.common.mvi.api.MviAction
  */
 sealed class HomeAction : MviAction {
 
-    object LoadTasksAction : HomeAction()
+    object ObserveTasksUpdatesAction : HomeAction()
 
     data class AddTaskAction(val taskContent: String) : HomeAction()
 

@@ -49,8 +49,8 @@ class HomeFragment : BaseFragment(R.layout.fragment_home), MviEventsCacheManager
 
     override fun onStart() {
         super.onStart()
-        /** send action to load tasks list if list is empty */
-        homeMviController.accept { loadDataIfNeeded() }
+        /** send action to observe tasks list updates */
+        homeMviController.accept { observeTasksUpdates() }
     }
 
     private fun initButtons() {
