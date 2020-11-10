@@ -2,9 +2,9 @@ package pl.mobite.playground.domain.home.mvi.impl
 
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.map
 import pl.mobite.playground.common.mvi.api.MviActionProcessor
 import pl.mobite.playground.common.mvi.processing.MviActionProcessing
 import pl.mobite.playground.data.usecase.*
@@ -52,9 +52,7 @@ class ObserveTasksUpdatesActionProcessor(
     override fun invoke(action: ObserveTasksUpdatesAction) = flow {
         emit(InProgressResult)
         delay(PROCESSING_DELAY_MILS)
-        getAllTasksFlowUseCase().onEach {
-            this.emit(TasksListUpdatedResult(it))
-        }.collect()
+        emitAll(getAllTasksFlowUseCase().map(::TasksListUpdatedResult))
     }.catch {
         emit(ErrorResult(it))
     }
