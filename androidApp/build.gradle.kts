@@ -29,6 +29,8 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-livedata-core-ktx:2.2.0")
     implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.2.0")
 
+    implementation("androidx.lifecycle:lifecycle-common-java8:2.2.0")
+
     implementation("androidx.lifecycle:lifecycle-extensions:2.2.0")
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0")
 
@@ -66,5 +68,8 @@ android {
 
     kotlinOptions {
         jvmTarget = "1.8"
+    }
+    buildFeatures {
+        viewBinding = true
     }
 }
