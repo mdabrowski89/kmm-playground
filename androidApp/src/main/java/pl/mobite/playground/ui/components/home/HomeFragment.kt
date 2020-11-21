@@ -40,7 +40,6 @@ class HomeFragment : BaseFragment(R.layout.fragment_home), MviEventsCacheManager
         )
 
         /** subscribe with a render function to LifeData with viewStates */
-        homeMviController.observeState(::render)
         homeMviController.viewStatesFlow.asLiveData().observe(viewLifecycleOwner, ::render)
     }
 
