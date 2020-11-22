@@ -7,17 +7,19 @@ import org.koin.androidx.viewmodel.ext.android.getStateViewModel
 import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.qualifier.Qualifier
 import pl.mobite.playground.common.mvi.MviController
+import pl.mobite.playground.ui.base.MviEventsCache
 import kotlin.reflect.KClass
 
 /**
- * Instantiate ViewModel and provides MviController reference from this ViewModel
+ * Instantiate ViewModel and provides an object reference from this ViewModel
  */
-inline fun <reified VM : ViewModel, reified C : MviController<*, *, *>> SavedStateRegistryOwner.mviController(
+inline fun <reified VM : ViewModel, reified T : Any> SavedStateRegistryOwner.provideFrom(
     clazz: KClass<VM>,
     qualifier: Qualifier? = null,
     bundle: Bundle? = null,
     noinline parameters: ParametersDefinition? = null,
-    crossinline mviControllerProvider: VM.() -> C
-): Lazy<C> {
-    return lazy { getStateViewModel(clazz, qualifier, bundle, parameters).mviControllerProvider() }
+    crossinline provider: VM.() -> T
+): Lazy<T> {
+    return lazy { getStateViewModel(clazz, qualifier, bundle, parameters).provider() }
 }
+

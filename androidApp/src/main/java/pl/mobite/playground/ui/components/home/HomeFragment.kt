@@ -5,30 +5,27 @@ import android.view.View
 import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.lifecycle.asLiveData
+import androidx.fragment.app.Fragment
 import pl.mobite.playground.R
 import pl.mobite.playground.databinding.FragmentHomeBinding
 import pl.mobite.playground.domain.home.mvi.impl.HomeViewState
-import pl.mobite.playground.ui.base.BaseFragment
-import pl.mobite.playground.ui.base.MviEventsCache
-import pl.mobite.playground.ui.base.MviEventsCacheManager
 import pl.mobite.playground.ui.base.viewbinding.viewBinding
 import pl.mobite.playground.ui.components.home.recyclerview.TasksAdapter
-import pl.mobite.playground.utils.mviController
+import pl.mobite.playground.utils.provideFrom
 import pl.mobite.playground.utils.with
 
-class HomeFragment : BaseFragment(R.layout.fragment_home), MviEventsCacheManager {
+class HomeFragment : Fragment(R.layout.fragment_home) {
 
     private val binding: FragmentHomeBinding by viewBinding()
 
     /** Gets HomeViewModel instance and extract mviController from it */
-    private val homeMviController by mviController(HomeViewModel::class) { homeMviController }
+    private val homeMviController by provideFrom(HomeViewModel::class) { homeMviController }
+    private val homeEventsCache by provideFrom(HomeViewModel::class) { homeEventsCache }
 
     private val tasksAdapter = TasksAdapter { taskId, isChecked ->
         /** send action to change tasks state (completed/not completed) */
         homeMviController.accept { updateTask(taskId, isChecked) }
     }
-
-    override val cache: MviEventsCache = MviEventsCache(javaClass.name)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -61,11 +58,11 @@ class HomeFragment : BaseFragment(R.layout.fragment_home), MviEventsCacheManager
             tasksAdapter.tasks = newTasks.toList()
         }
 
-        taskAddedEvent?.consume {
+        homeEventsCache.consumeEvent(taskAddedEvent) {
             newTaskInput.setText("")
         }
 
-        errorEvent?.consume {
+        homeEventsCache.consumeEvent(errorEvent) {
             Toast.makeText(requireContext(), "Error occurred", Toast.LENGTH_SHORT).show()
         }
     }}
