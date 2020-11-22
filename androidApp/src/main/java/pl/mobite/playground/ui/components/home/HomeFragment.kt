@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment
 import pl.mobite.playground.R
 import pl.mobite.playground.databinding.FragmentHomeBinding
 import pl.mobite.playground.domain.home.mvi.impl.HomeViewState
+import pl.mobite.playground.ui.base.consumeWith
 import pl.mobite.playground.ui.base.viewbinding.viewBinding
 import pl.mobite.playground.ui.components.home.recyclerview.TasksAdapter
 import pl.mobite.playground.utils.provideFrom
@@ -58,11 +59,11 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
             tasksAdapter.tasks = newTasks.toList()
         }
 
-        homeEventsCache.consumeEvent(taskAddedEvent) {
+        taskAddedEvent?.consumeWith(homeEventsCache) {
             newTaskInput.setText("")
         }
 
-        homeEventsCache.consumeEvent(errorEvent) {
+        errorEvent?.consumeWith(homeEventsCache) {
             Toast.makeText(requireContext(), "Error occurred", Toast.LENGTH_SHORT).show()
         }
     }}
