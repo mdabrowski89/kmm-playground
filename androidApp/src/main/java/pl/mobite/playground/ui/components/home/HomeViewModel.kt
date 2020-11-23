@@ -17,7 +17,7 @@ class HomeViewModel(
 ) : MviViewModel() {
 
     val homeMviController: HomeMviController by mviController(viewStateCache.get() ?: initialViewState)
-    val homeEventsCache = MviEventsCache(javaClass.name).apply { load(savedStateHandle) }
+    val homeMviEventsCache = MviEventsCache(javaClass.name).apply { load(savedStateHandle) }
 
     init {
         viewStateCache.useWith(homeMviController.viewStatesFlow)
@@ -25,6 +25,6 @@ class HomeViewModel(
 
     override fun onCleared() {
         super.onCleared()
-        homeEventsCache.save(savedStateHandle)
+        homeMviEventsCache.save(savedStateHandle)
     }
 }
