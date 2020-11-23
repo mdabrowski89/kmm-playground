@@ -4,16 +4,16 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Toast
 import androidx.core.view.isVisible
-import androidx.lifecycle.asLiveData
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.asLiveData
 import pl.mobite.playground.R
 import pl.mobite.playground.databinding.FragmentHomeBinding
 import pl.mobite.playground.domain.home.mvi.impl.HomeViewState
 import pl.mobite.playground.ui.base.consumeWith
+import pl.mobite.playground.ui.base.invoke
 import pl.mobite.playground.ui.base.viewbinding.viewBinding
 import pl.mobite.playground.ui.components.home.recyclerview.TasksAdapter
 import pl.mobite.playground.utils.provideFrom
-import pl.mobite.playground.utils.with
 
 class HomeFragment : Fragment(R.layout.fragment_home) {
 
@@ -33,12 +33,13 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
 
         binding.init(
             tasksAdapter = tasksAdapter,
-            onAddButtonClick = { homeMviController.accept { addTask(it) }},
+            onAddButtonClick = { homeMviController.accept { addTask(it) } },
             onDeleteButtonClick = { homeMviController.accept { deleteCompletedTasks() } }
         )
 
         /** subscribe with a render function to LifeData with viewStates */
-        homeMviController.viewStatesFlow.asLiveData().observe(viewLifecycleOwner, ::render)
+        homeMviController.viewStatesFlow.asLiveData()
+            .observe(viewLifecycleOwner) { binding.render(it) }
     }
 
     override fun onStart() {
@@ -48,7 +49,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
     }
 
     /** Function which updates UI based on new viewState object receives from MviController */
-    private fun render(viewState: HomeViewState) = binding.with(viewState) {{
+    private fun FragmentHomeBinding.render(viewState: HomeViewState) = with(viewState) {
         progressBar.isVisible = inProgress
         newTaskInput.isEnabled = !inProgress
         addTaskButton.isEnabled = !inProgress
@@ -59,6 +60,11 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
             tasksAdapter.tasks = newTasks.toList()
         }
 
+        homeEventsCache {
+            taskAddedEvent{ newTaskInput.setText("") }
+            errorEvent{ Toast.makeText(requireContext(), "Error occurred", Toast.LENGTH_SHORT).show()}
+        }
+
         taskAddedEvent?.consumeWith(homeEventsCache) {
             newTaskInput.setText("")
         }
@@ -66,5 +72,5 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         errorEvent?.consumeWith(homeEventsCache) {
             Toast.makeText(requireContext(), "Error occurred", Toast.LENGTH_SHORT).show()
         }
-    }}
+    }
 }
