@@ -64,13 +64,5 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
             taskAddedEvent{ newTaskInput.setText("") }
             errorEvent{ Toast.makeText(requireContext(), "Error occurred", Toast.LENGTH_SHORT).show()}
         }
-
-        taskAddedEvent?.consumeWith(homeEventsCache) {
-            newTaskInput.setText("")
-        }
-
-        errorEvent?.consumeWith(homeEventsCache) {
-            Toast.makeText(requireContext(), "Error occurred", Toast.LENGTH_SHORT).show()
-        }
     }
 }
