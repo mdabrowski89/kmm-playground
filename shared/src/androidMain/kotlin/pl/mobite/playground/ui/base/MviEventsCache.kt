@@ -27,8 +27,8 @@ class MviEventsCache(name: String) {
             mviEventsCache.add(id)
         }
 
-    inline operator fun <T : Any> (MviEvent<T>?).invoke(body: T.() -> Unit) {
-        body(this?.value ?: return)
+    inline operator fun <T : Any> (MviEvent<T>?).invoke(crossinline body: (T) -> Unit) {
+        this?.consumeWith(this@MviEventsCache) { body(it) }
     }
 }
 
