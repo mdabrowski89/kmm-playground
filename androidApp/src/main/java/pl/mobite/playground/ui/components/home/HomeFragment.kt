@@ -4,43 +4,41 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Toast
 import androidx.core.view.isVisible
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.asLiveData
 import pl.mobite.playground.R
 import pl.mobite.playground.databinding.FragmentHomeBinding
 import pl.mobite.playground.domain.home.mvi.impl.HomeViewState
-import pl.mobite.playground.ui.base.BaseFragment
-import pl.mobite.playground.ui.base.MviEventsCache
-import pl.mobite.playground.ui.base.MviEventsCacheManager
+import pl.mobite.playground.ui.base.invoke
 import pl.mobite.playground.ui.base.viewbinding.viewBinding
 import pl.mobite.playground.ui.components.home.recyclerview.TasksAdapter
-import pl.mobite.playground.utils.mviController
-import pl.mobite.playground.utils.with
+import pl.mobite.playground.utils.provideFrom
 
-class HomeFragment : BaseFragment(R.layout.fragment_home), MviEventsCacheManager {
+class HomeFragment : Fragment(R.layout.fragment_home) {
 
     private val binding: FragmentHomeBinding by viewBinding()
 
-    /** Gets HomeViewModel instance and extract mviController from it */
-    private val homeMviController by mviController(HomeViewModel::class) { homeMviController }
+    /** Gets HomeViewModel instance and extract mviController and mviEventsCache from it */
+    private val homeMviController by provideFrom(HomeViewModel::class) { homeMviController }
+    private val homeMviEventsCache by provideFrom(HomeViewModel::class) { homeMviEventsCache }
 
     private val tasksAdapter = TasksAdapter { taskId, isChecked ->
         /** send action to change tasks state (completed/not completed) */
         homeMviController.accept { updateTask(taskId, isChecked) }
     }
 
-    override val cache: MviEventsCache = MviEventsCache(javaClass.name)
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         binding.init(
             tasksAdapter = tasksAdapter,
-            onAddButtonClick = { homeMviController.accept { addTask(it) }},
+            onAddButtonClick = { homeMviController.accept { addTask(it) } },
             onDeleteButtonClick = { homeMviController.accept { deleteCompletedTasks() } }
         )
 
         /** subscribe with a render function to LifeData with viewStates */
-        homeMviController.viewStatesFlow.asLiveData().observe(viewLifecycleOwner, ::render)
+        homeMviController.viewStatesFlow.asLiveData()
+            .observe(viewLifecycleOwner) { binding.render(it) }
     }
 
     override fun onStart() {
@@ -50,7 +48,7 @@ class HomeFragment : BaseFragment(R.layout.fragment_home), MviEventsCacheManager
     }
 
     /** Function which updates UI based on new viewState object receives from MviController */
-    private fun render(viewState: HomeViewState) = binding.with(viewState) {{
+    private fun FragmentHomeBinding.render(viewState: HomeViewState) = with(viewState) {
         progressBar.isVisible = inProgress
         newTaskInput.isEnabled = !inProgress
         addTaskButton.isEnabled = !inProgress
@@ -61,12 +59,9 @@ class HomeFragment : BaseFragment(R.layout.fragment_home), MviEventsCacheManager
             tasksAdapter.tasks = newTasks.toList()
         }
 
-        taskAddedEvent?.consume {
-            newTaskInput.setText("")
+        homeMviEventsCache {
+            taskAddedEvent { newTaskInput.setText("") }
+            errorEvent { Toast.makeText(requireContext(), "Error occurred", Toast.LENGTH_SHORT).show() }
         }
-
-        errorEvent?.consume {
-            Toast.makeText(requireContext(), "Error occurred", Toast.LENGTH_SHORT).show()
-        }
-    }}
+    }
 }
